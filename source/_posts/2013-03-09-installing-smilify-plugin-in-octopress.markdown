@@ -10,6 +10,8 @@ So, I just installed octopress and published a hello world post, but the smilies
 
 No Worry, i asked uncle G and now writing down the procedure in case i forgot it in future :P
 
+<!-- more -->
+
 The smilify plugin is here [jekyll_smilify](https://github.com/SaswatPadhi/jekyll_smilify) 
 
 
@@ -47,7 +49,7 @@ Placing things in write place is done. Now need to enable the contents to filter
 {% endraw %}
 Optional:
 ---
-I see the css of the octopress theme was making the smiles to have a border around it and drop-shadow applied, whick looks ugly. To fix this,
+I see the css of the octopress theme was making the smiles to have a border around it and drop-shadow applied, which looks ugly. To fix this,
 
 1. Open `~/octopresssass/custom/_styles.scss` and add
 
