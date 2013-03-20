@@ -101,3 +101,5 @@ facebook_like: true
 
 # smily theme
 smileytheme: YM11b
+
+markdown: redcarpet

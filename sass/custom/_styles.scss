@@ -193,3 +193,31 @@
 
 /* smiley */
 img.smiley { border : none ; box-shadow: 0 0 0 0 }
+
+#tag-cloud a {
+font-size: 120.0%;
+font-weight: bold;
+padding: 1px 7px 2px 7px;
+margin-bottom: 4px;
+display: inline-block;
+border: 1px solid;
+border-color: #a5bade #9fb4d9 #94a9cf;
+border-radius: 12px;
+background-image: -webkit-linear-gradient(top, #dde7f5,#c1cfea);
+background-image: -moz-linear-gradient(top, #dde7f5,#c1cfea);
+background-image: -o-linear-gradient(top, #dde7f5,#c1cfea);
+background-image: linear-gradient(to bottom, #dde7f5,#c1cfea);
+-webkit-box-shadow: inset 0 1px rgba(255,255,255,0.1),0 1px rgba(0,0,0,0.03);
+box-shadow: inset 0 1px rgba(255,255,255,0.1),0 1px rgba(0,0,0,0.03);
+}
+
+#cclogo {
+position: relative;
+top: 3px;
+margin-left: 5px;
+}
+
+li {
+margin-top: 6px;
+margin-bottom: 6px;
+}
