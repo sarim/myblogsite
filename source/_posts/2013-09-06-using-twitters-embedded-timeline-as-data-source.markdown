@@ -16,8 +16,8 @@ Today i came up with a hack around this widget, you still need to create a widge
 
 Check the [DEMO](http://jsfiddle.net/sarim/S7AeM/embedded/result/)  first.
 
-Now check the sources, things are pretty self-explanatory. The twitter widget creates a iframe. Interesting thing is, instead of just loading the iframe from twitter, it creates a empty iframe, then writes the html inside the iframe. the src attr of iframe remains empty, that enables us to access it freely. Thats what i did, i let it load, made it invisible but sending it off the page using css. Now i just parsed the tweets from the iframe and created my own widget.
+Now check the sources, things are pretty self-explanatory. The twitter widget creates a iframe. Interesting thing is, instead of just loading the iframe from twitter, it creates a empty iframe, then writes the html inside the iframe. The src attr of iframe remains empty, that enables us to access it freely. Thats what i did, i let it load, made it invisible by sending it off the page using css. Now i just parsed the tweets from the iframe and created my own widget.
 
-Now can also see it in my site's sidebar.
+You can also see it in my site's sidebar.
 
 Let me know your ideas about this in the comments section below.
