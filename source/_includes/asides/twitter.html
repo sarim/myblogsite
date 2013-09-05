@@ -2,18 +2,15 @@
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating...</li>
+	<div id="hiddentweet">
+	  	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/{{site.twitter_user}}" data-chrome="nofooter noheader" data-widget-id="375613472869859328" data-tweet-limit="{{site.twitter_tweet_count}}">Loading tweets by @gittumia . . . </a>
+		<script id="twitter-wjs" src="http://platform.twitter.com/widgets.js" async onload="parsetwitter({{site.twitter_tweet_count}})"></script>
+	</div>
   </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("{{site.twitter_user}}", {{site.twitter_tweet_count}}, {{site.twitter_show_replies}});
-    });
-  </script>
-  <script src="{{ root_url }}/javascripts/twitter.js" type="text/javascript"> </script>
-  {% if site.twitter_follow_button %}
-    <a href="http://twitter.com/{{ site.twitter_user }}" class="twitter-follow-button" data-show-count="{{ site.twitter_show_follower_count }}">Follow @{{ site.twitter_user }}</a>
-  {% else %}
-    <p>Follow <a href="http://twitter.com/{{site.twitter_user}}">@{{ site.twitter_user }}</a></p>
-  {% endif %}
+   {% if site.twitter_follow_button %}
+     <a href="http://twitter.com/{{ site.twitter_user }}" class="twitter-follow-button" data-show-count="{{ site.twitter_show_follower_count }}">Follow @{{ site.twitter_user }}</a>
+   {% else %}
+     <p>Follow <a href="http://twitter.com/{{site.twitter_user}}">@{{ site.twitter_user }}</a></p>
+   {% endif %}
 </section>
 {% endif %}
