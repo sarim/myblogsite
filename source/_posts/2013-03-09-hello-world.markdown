@@ -3,7 +3,7 @@ layout: post
 title: "Hello World"
 date: 2013-03-09 01:38
 comments: true
-categories: miscellaneous
+categories: [miscellaneous]
 ---
 
 So, I finally managed to collect enough courage to publish a blog to the internet, Hurray !

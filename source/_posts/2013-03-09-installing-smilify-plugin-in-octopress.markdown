@@ -3,7 +3,7 @@ layout: post
 title: "Installing Smilify plugin in octopress"
 date: 2013-03-09 02:42
 comments: true
-categories: [octopress, jekyll]
+categories: [octopress, jekyll, plugin]
 ---
 
 So, I just installed octopress and published a hello world post, but the smilies(emoticons) didn't converted to icons :O
