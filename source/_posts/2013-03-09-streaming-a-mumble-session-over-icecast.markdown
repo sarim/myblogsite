@@ -9,7 +9,9 @@ categories: [mumble, icecast, linux, pulseaudio, liquidsoap]
 This guide is heavily based on [derek's guide](http://www.skyehaven.net/blog/2011/03/14/mumble-icecast/) but i used liquidsoap instead of darkice and vnc for headless linux server.
 
 Lets say you have some users talking in a mumble server and want to brodcast that conversation but dont want  people to join and interfare but want people able to listen to. So, here's how to do that.
+
 <!-- more -->
+
 Requirements:
 --
 

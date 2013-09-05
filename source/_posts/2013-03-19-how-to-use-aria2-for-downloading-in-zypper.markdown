@@ -10,6 +10,8 @@ Zypper, the great featureful package manager for opensuse uses curl for download
 
 Let's make zypper download packages in the speed of light using aria2 :D
 
+<!--more-->
+
 0. First install aria2. You can install it from repo, `sudo zypper in aria2` or from [software.opensuse.org](http://software.opensuse.org/package/aria2)
 
 0. Now we need to tell zypper (libzypp to be technically correct) to use aria2, passing ENV Variable `ZYPP_ARIA2C` is needed for this. Open `/etc/bash.bashrc` for editing.
