@@ -226,6 +226,5 @@ li code {
 margin: 0;
 }
 
-#hiddentweet {
-display : none;
-}
+#hiddentweet { position : fixed ; top : -5000px ; }
+
