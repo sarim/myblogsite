@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Gittu's Blog]]></title>
-  <link href="http://blog.sarim.me//atom.xml" rel="self"/>
-  <link href="http://blog.sarim.me//"/>
-  <updated>2013-09-07T13:23:32+06:00</updated>
-  <id>http://blog.sarim.me//</id>
+  <link href="http://blog.sarim.me/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2013-09-07T14:55:50+06:00</updated>
+  <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
     <email><![CDATA[sarim2005@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Dealing with Chrome's Corrupt Profile]]></title>
-    <link href="http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile/"/>
+    <link href="http://blog.sarim.me/2013/09/06/dealing-with-chromes-corrupt-profile/"/>
     <updated>2013-09-06T13:55:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile</id>
+    <id>http://blog.sarim.me/2013/09/06/dealing-with-chromes-corrupt-profile</id>
     <content type="html"><![CDATA[<p>This is a common thing for any chrome user. The profile of chrome gets corrupted after sometimes and you will be provided with a &quot;Your Profile is corrupted&quot; etc… error message, and your profile is stuck, it doesn&#39;t get saved, saved cookies, site data etc… will be gone each time you close chrome. Chrome uses sqlite3 for various databases for its profile. But sqlite3 database tends to corrupt very often, especially in case of a power failure.</p>
 
 <!--more-->
@@ -55,9 +55,9 @@ Here i&#39;m piping 4 commands, firstly i&#39;m using <code>find</code> to get a
   
   <entry>
     <title type="html"><![CDATA[Site version plugin for jekyll/octopress]]></title>
-    <link href="http://blog.sarim.me//2013/09/06/site-version-plugin-for-jekyll-slash-octopress/"/>
+    <link href="http://blog.sarim.me/2013/09/06/site-version-plugin-for-jekyll-slash-octopress/"/>
     <updated>2013-09-06T01:34:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/09/06/site-version-plugin-for-jekyll-slash-octopress</id>
+    <id>http://blog.sarim.me/2013/09/06/site-version-plugin-for-jekyll-slash-octopress</id>
     <content type="html"><![CDATA[<p>Disclaimer: I dont know ruby. Not even know how to print hello world. So dont blame me for using bash :P</p>
 
 <p>Check my site&#39;s footer. You&#39;ll see a <code>site version ####</code>. What is it ? Its just a fancy jekyll plugin i created that shows a version based on git commit. Everytime you add a new commit to your site source, the version increases.</p>
@@ -89,9 +89,9 @@ Here i&#39;m piping 4 commands, firstly i&#39;m using <code>find</code> to get a
   
   <entry>
     <title type="html"><![CDATA[Using twitter's embedded timeline as data source]]></title>
-    <link href="http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source/"/>
+    <link href="http://blog.sarim.me/2013/09/06/using-twitters-embedded-timeline-as-data-source/"/>
     <updated>2013-09-06T00:15:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source</id>
+    <id>http://blog.sarim.me/2013/09/06/using-twitters-embedded-timeline-as-data-source</id>
     <content type="html"><![CDATA[<p>The title is kinda ambiguous, i know. We all know that twitter has introduced api 1.1 and removed api 1.0. Now in 1.0 we could get any public user&#39;r timeline without auth. So we could just get users timeline as jsonp and create a twitter widget like &quot;Recent Tweets&quot; without any server side code. But…… those good old days are gone. Now you need a twitter client and need to make oauth-authorized request to get that data. And obviously that rules out the client side implementation as no one would publish his token,secret,key etc.. in a public accessible javascript file.</p>
 
 <!--more-->
@@ -112,9 +112,9 @@ Here i&#39;m piping 4 commands, firstly i&#39;m using <code>find</code> to get a
   
   <entry>
     <title type="html"><![CDATA[How to use aria2 for downloading in zypper]]></title>
-    <link href="http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper/"/>
+    <link href="http://blog.sarim.me/2013/03/19/how-to-use-aria2-for-downloading-in-zypper/"/>
     <updated>2013-03-19T21:40:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper</id>
+    <id>http://blog.sarim.me/2013/03/19/how-to-use-aria2-for-downloading-in-zypper</id>
     <content type="html"><![CDATA[<p>Zypper, the great featureful package manager for opensuse uses curl for downloading as default. On the other side, aria2, is one of the best multi-threaded download manager available for *nix. Zypper has a aria2 plugin for a long time but usually not activated by default.</p>
 
 <p>Let&#39;s make zypper download packages in the speed of light using aria2 :D</p>
@@ -158,9 +158,9 @@ Add <code>ZYPP_ARIA2C</code> at the end of this line.
   
   <entry>
     <title type="html"><![CDATA[Mysql utf/latin collation and bangla nightmare]]></title>
-    <link href="http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/"/>
+    <link href="http://blog.sarim.me/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/"/>
     <updated>2013-03-18T01:54:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare</id>
+    <id>http://blog.sarim.me/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare</id>
     <content type="html"><![CDATA[<p>Those who maintain a non-english/bangla blog, forum or site, this type of problems are kinda common. The most common problem is seeing <code>??????</code>, and fix: go and change collation to utf8 :D
 But my problem started from this simple (yes it looked simple :S ) problem but ended up a nightmare.</p>
 
@@ -234,9 +234,9 @@ Forgive my poor writing and let me know your thoughts in the comment section.</p
   
   <entry>
     <title type="html"><![CDATA[Streaming a mumble session over Icecast]]></title>
-    <link href="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/"/>
+    <link href="http://blog.sarim.me/2013/03/09/streaming-a-mumble-session-over-icecast/"/>
     <updated>2013-03-09T19:45:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast</id>
+    <id>http://blog.sarim.me/2013/03/09/streaming-a-mumble-session-over-icecast</id>
     <content type="html"><![CDATA[<p>This guide is heavily based on <a href="http://www.skyehaven.net/blog/2011/03/14/mumble-icecast/">derek&#39;s guide</a> but i used liquidsoap instead of darkice and vnc for headless linux server.</p>
 
 <p>Lets say you have some users talking in a mumble server and want to brodcast that conversation but dont want  people to join and interfare but want people able to listen to. So, here&#39;s how to do that.</p>
@@ -393,9 +393,9 @@ To do that, run,
   
   <entry>
     <title type="html"><![CDATA[Installing Smilify plugin in octopress]]></title>
-    <link href="http://blog.sarim.me//2013/03/09/installing-smilify-plugin-in-octopress/"/>
+    <link href="http://blog.sarim.me/2013/03/09/installing-smilify-plugin-in-octopress/"/>
     <updated>2013-03-09T02:42:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/09/installing-smilify-plugin-in-octopress</id>
+    <id>http://blog.sarim.me/2013/03/09/installing-smilify-plugin-in-octopress</id>
     <content type="html"><![CDATA[<p>So, I just installed octopress and published a hello world post, but the smilies(emoticons) didn&#39;t converted to icons :O</p>
 
 <p>No Worry, i asked uncle G and now writing down the procedure in case i forgot it in future :P</p>
@@ -444,9 +444,9 @@ cp -r source/_include/smileys/ ~/octopress/source/_includes/smileys/
   
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>
-    <link href="http://blog.sarim.me//2013/03/09/hello-world/"/>
+    <link href="http://blog.sarim.me/2013/03/09/hello-world/"/>
     <updated>2013-03-09T01:38:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/09/hello-world</id>
+    <id>http://blog.sarim.me/2013/03/09/hello-world</id>
     <content type="html"><![CDATA[<p>So, I finally managed to collect enough courage to publish a blog to the internet, Hurray !</p>
 
 <p>For a virtual_vagabond type people like me, who can&#39;t organize anything :P i think it is a daunting challenge to regularly maintain a blog.</p>

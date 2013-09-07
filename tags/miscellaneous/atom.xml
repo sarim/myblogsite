@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Tags: miscellaneous | Gittu's Blog]]></title>
-  <link href="http://blog.sarim.me//tags/miscellaneous/atom.xml" rel="self"/>
-  <link href="http://blog.sarim.me//"/>
-  <updated>2013-09-07T13:23:32+06:00</updated>
-  <id>http://blog.sarim.me//</id>
+  <link href="http://blog.sarim.me/tags/miscellaneous/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2013-09-07T14:55:50+06:00</updated>
+  <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
     <email><![CDATA[sarim2005@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>
-    <link href="http://blog.sarim.me//2013/03/09/hello-world/"/>
+    <link href="http://blog.sarim.me/2013/03/09/hello-world/"/>
     <updated>2013-03-09T01:38:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/09/hello-world</id>
+    <id>http://blog.sarim.me/2013/03/09/hello-world</id>
     <content type="html"><![CDATA[<p>So, I finally managed to collect enough courage to publish a blog to the internet, Hurray !</p>
 
 <p>For a virtual_vagabond type people like me, who can&#39;t organize anything :P i think it is a daunting challenge to regularly maintain a blog.</p>

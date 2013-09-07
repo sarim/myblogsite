@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Tags: twitter | Gittu's Blog]]></title>
-  <link href="http://blog.sarim.me//tags/twitter/atom.xml" rel="self"/>
-  <link href="http://blog.sarim.me//"/>
-  <updated>2013-09-07T13:23:32+06:00</updated>
-  <id>http://blog.sarim.me//</id>
+  <link href="http://blog.sarim.me/tags/twitter/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2013-09-07T14:55:50+06:00</updated>
+  <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
     <email><![CDATA[sarim2005@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Using twitter's embedded timeline as data source]]></title>
-    <link href="http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source/"/>
+    <link href="http://blog.sarim.me/2013/09/06/using-twitters-embedded-timeline-as-data-source/"/>
     <updated>2013-09-06T00:15:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source</id>
+    <id>http://blog.sarim.me/2013/09/06/using-twitters-embedded-timeline-as-data-source</id>
     <content type="html"><![CDATA[<p>The title is kinda ambiguous, i know. We all know that twitter has introduced api 1.1 and removed api 1.0. Now in 1.0 we could get any public user&#39;r timeline without auth. So we could just get users timeline as jsonp and create a twitter widget like &quot;Recent Tweets&quot; without any server side code. But…… those good old days are gone. Now you need a twitter client and need to make oauth-authorized request to get that data. And obviously that rules out the client side implementation as no one would publish his token,secret,key etc.. in a public accessible javascript file.</p>
 
 <!--more-->

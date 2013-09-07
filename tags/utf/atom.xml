@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Tags: utf | Gittu's Blog]]></title>
-  <link href="http://blog.sarim.me//tags/utf/atom.xml" rel="self"/>
-  <link href="http://blog.sarim.me//"/>
-  <updated>2013-09-07T13:23:32+06:00</updated>
-  <id>http://blog.sarim.me//</id>
+  <link href="http://blog.sarim.me/tags/utf/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2013-09-07T14:55:50+06:00</updated>
+  <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
     <email><![CDATA[sarim2005@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Mysql utf/latin collation and bangla nightmare]]></title>
-    <link href="http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/"/>
+    <link href="http://blog.sarim.me/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/"/>
     <updated>2013-03-18T01:54:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare</id>
+    <id>http://blog.sarim.me/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare</id>
     <content type="html"><![CDATA[<p>Those who maintain a non-english/bangla blog, forum or site, this type of problems are kinda common. The most common problem is seeing <code>??????</code>, and fix: go and change collation to utf8 :D
 But my problem started from this simple (yes it looked simple :S ) problem but ended up a nightmare.</p>
 

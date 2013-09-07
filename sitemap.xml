@@ -1,57 +1,59 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://blog.sarim.me//2013/03/09/hello-world/</loc>
+        <loc>http://blog.sarim.me/2013/03/09/hello-world/</loc>
         <lastmod>2013-09-06T02:03:09+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//2013/03/09/installing-smilify-plugin-in-octopress/</loc>
+        <loc>http://blog.sarim.me/2013/03/09/installing-smilify-plugin-in-octopress/</loc>
         <lastmod>2013-09-06T01:35:46+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/</loc>
+        <loc>http://blog.sarim.me/2013/03/09/streaming-a-mumble-session-over-icecast/</loc>
         <lastmod>2013-05-22T19:31:46+06:00</lastmod>
     </url>
     <url>
         <loc>
-            http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/
+            http://blog.sarim.me/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/
         </loc>
         <lastmod>2013-03-21T02:24:42+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper/</loc>
+        <loc>http://blog.sarim.me/2013/03/19/how-to-use-aria2-for-downloading-in-zypper/</loc>
         <lastmod>2013-03-21T03:25:20+06:00</lastmod>
     </url>
     <url>
         <loc>
-            http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source/
+            http://blog.sarim.me/2013/09/06/using-twitters-embedded-timeline-as-data-source/
         </loc>
         <lastmod>2013-09-06T01:21:34+06:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://blog.sarim.me//2013/09/06/site-version-plugin-for-jekyll-slash-octopress/
-        </loc>
+        <loc>http://blog.sarim.me/2013/09/06/site-version-plugin-for-jekyll-slash-octopress/</loc>
         <lastmod>2013-09-06T02:00:58+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile/</loc>
+        <loc>http://blog.sarim.me/2013/09/06/dealing-with-chromes-corrupt-profile/</loc>
         <lastmod>2013-09-06T14:33:45+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//archives/</loc>
+        <loc>http://blog.sarim.me/404.html</loc>
+        <lastmod>2013-09-07T14:46:30+06:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.sarim.me/archives/</loc>
         <lastmod>2013-09-06T14:33:45+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//</loc>
-        <lastmod>2013-09-06T14:33:45+06:00</lastmod>
+        <loc>http://blog.sarim.me/</loc>
+        <lastmod>2013-09-07T14:54:32+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//licence/</loc>
+        <loc>http://blog.sarim.me/licence/</loc>
         <lastmod>2013-03-11T20:42:31+06:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.sarim.me//robots.txt</loc>
+        <loc>http://blog.sarim.me/robots.txt</loc>
         <lastmod>2013-03-09T01:20:47+06:00</lastmod>
     </url>
 </urlset>

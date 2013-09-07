@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Tags: pulseaudio | Gittu's Blog]]></title>
-  <link href="http://blog.sarim.me//tags/pulseaudio/atom.xml" rel="self"/>
-  <link href="http://blog.sarim.me//"/>
-  <updated>2013-09-07T13:23:32+06:00</updated>
-  <id>http://blog.sarim.me//</id>
+  <link href="http://blog.sarim.me/tags/pulseaudio/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2013-09-07T14:55:50+06:00</updated>
+  <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
     <email><![CDATA[sarim2005@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Streaming a mumble session over Icecast]]></title>
-    <link href="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/"/>
+    <link href="http://blog.sarim.me/2013/03/09/streaming-a-mumble-session-over-icecast/"/>
     <updated>2013-03-09T19:45:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast</id>
+    <id>http://blog.sarim.me/2013/03/09/streaming-a-mumble-session-over-icecast</id>
     <content type="html"><![CDATA[<p>This guide is heavily based on <a href="http://www.skyehaven.net/blog/2011/03/14/mumble-icecast/">derek&#39;s guide</a> but i used liquidsoap instead of darkice and vnc for headless linux server.</p>
 
 <p>Lets say you have some users talking in a mumble server and want to brodcast that conversation but dont want  people to join and interfare but want people able to listen to. So, here&#39;s how to do that.</p>

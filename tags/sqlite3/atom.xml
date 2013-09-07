@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Tags: sqlite3 | Gittu's Blog]]></title>
-  <link href="http://blog.sarim.me//tags/sqlite3/atom.xml" rel="self"/>
-  <link href="http://blog.sarim.me//"/>
-  <updated>2013-09-07T13:23:32+06:00</updated>
-  <id>http://blog.sarim.me//</id>
+  <link href="http://blog.sarim.me/tags/sqlite3/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2013-09-07T14:55:50+06:00</updated>
+  <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
     <email><![CDATA[sarim2005@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Dealing with Chrome's Corrupt Profile]]></title>
-    <link href="http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile/"/>
+    <link href="http://blog.sarim.me/2013/09/06/dealing-with-chromes-corrupt-profile/"/>
     <updated>2013-09-06T13:55:00+06:00</updated>
-    <id>http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile</id>
+    <id>http://blog.sarim.me/2013/09/06/dealing-with-chromes-corrupt-profile</id>
     <content type="html"><![CDATA[<p>This is a common thing for any chrome user. The profile of chrome gets corrupted after sometimes and you will be provided with a &quot;Your Profile is corrupted&quot; etc… error message, and your profile is stuck, it doesn&#39;t get saved, saved cookies, site data etc… will be gone each time you close chrome. Chrome uses sqlite3 for various databases for its profile. But sqlite3 database tends to corrupt very often, especially in case of a power failure.</p>
 
 <!--more-->
