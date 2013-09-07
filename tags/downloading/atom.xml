@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tags: downloading | Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me//tags/downloading/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me//"/>
+  <updated>2013-09-07T13:23:32+06:00</updated>
+  <id>http://blog.sarim.me//</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How to use aria2 for downloading in zypper]]></title>
+    <link href="http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper/"/>
+    <updated>2013-03-19T21:40:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper</id>
+    <content type="html"><![CDATA[<p>Zypper, the great featureful package manager for opensuse uses curl for downloading as default. On the other side, aria2, is one of the best multi-threaded download manager available for *nix. Zypper has a aria2 plugin for a long time but usually not activated by default.</p>
+
+<p>Let&#39;s make zypper download packages in the speed of light using aria2 :D</p>
+
+<!--more-->
+
+<ol>
+<li><p>First install aria2. You can install it from repo, <code>sudo zypper in aria2</code> or from <a href="http://software.opensuse.org/package/aria2">software.opensuse.org</a></p></li>
+<li><p>Now we need to tell zypper (libzypp to be technically correct) to use aria2, passing ENV Variable <code>ZYPP_ARIA2C</code> is needed for this. Open <code>/etc/bash.bashrc</code> for editing.
+<code>sh
+sudo nano -w /etc/bash.bashrc
+</code></p></li>
+<li><p>Keep pressing <code>Cntrl + v</code> for scrolling down. At the end of the file, add this line.
+<code>sh
+export ZYPP_ARIA2C=1
+</code>
+Save and Exit. (<code>Cntrl + X</code>, <code>Y</code>, <code>Enter</code>)</p></li>
+<li><p>Now Zypper will use aria2 for downloading as root user, but when using sudo, that ENV variable will be striped. To fix this, edit <code>/etc/sudoers</code>
+<code>sh
+sudo nano -w /etc/sudoers
+</code>
+Look for this line
+<code>sh
+Defaults env_keep = &quot;LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS XDG_SESSION_COOKIE&quot;
+</code>
+Add <code>ZYPP_ARIA2C</code> at the end of this line.
+<code>sh
+Defaults env_keep = &quot;LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS XDG_SESSION_COOKIE ZYPP_ARIA2C&quot;
+</code></p></li>
+</ol>
+
+<p>Save and Exit.</p>
+
+<p>Done. Restart terminal and try to download a package using zypper. Zypper will now use aria2. I noticed a bug though, you wont be seeing the download progress, but i can live with it, dont u ? :)</p>
+
+<p>This guide is written in openSUSE 12.3 KDE, but the process will be similiar for other versions of openSUSE.</p>
+
+<p>Happy Linuxing :D</p>
+]]></content>
+  </entry>
+  
+</feed>

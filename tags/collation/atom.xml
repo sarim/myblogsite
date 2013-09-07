@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tags: collation | Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me//tags/collation/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me//"/>
+  <updated>2013-09-07T13:23:32+06:00</updated>
+  <id>http://blog.sarim.me//</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mysql utf/latin collation and bangla nightmare]]></title>
+    <link href="http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/"/>
+    <updated>2013-03-18T01:54:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare</id>
+    <content type="html"><![CDATA[<p>Those who maintain a non-english/bangla blog, forum or site, this type of problems are kinda common. The most common problem is seeing <code>??????</code>, and fix: go and change collation to utf8 :D
+But my problem started from this simple (yes it looked simple :S ) problem but ended up a nightmare.</p>
+
+<!--more-->
+
+<p>I was running a <a href="http://www.invisionpower.com">ipboard</a> instance. When importing a bangla translation, the text was showing as <code>??????</code>, so i applied the common fix, changed all table and field collation to utf8_unicode_ci and ipb&#39;s encoding to utf8. Now the site became inaccessible, showing a preety &quot;Fatal ERROR : Your settings could not be read by IP.Board&quot;. That was fixed by running ipb&#39;s <code>upgradeFinish</code> script but the real problem starts now.</p>
+
+<h2>The Problem:</h2>
+
+<p>All bangla letters became this :</p>
+
+<p><img src="http://f.cl.ly/items/3J083G0k3X1D422z3s0n/Screen%20Shot%202013-03-17.png" alt="image"></p>
+
+<p>Looks pretty right ? :v</p>
+
+<p>The reason behind this was all bangla chars were inserted in mysql using <code>latin1</code> encoding. If I set mysql client&#39;s encoding to latin1 and read, i get real bangla. If I set encoding to utf8 and read, i get latin-fied bangla like the picture.</p>
+
+<h2>Failed Attempts:</h2>
+
+<p>I immediately went on a long google search and tried several solutions, but unfortunately, none of them were able to solve the problem completely. These two links (<a href="http://www.bluebox.net/about/blog/2009/07/mysql_encoding/">1</a> <a href="http://www.oreillynet.com/lpt/wlg/9022">2</a>) were a great help though, which helped to understand the problem thoroughly.</p>
+
+<p>The solution proposed in first link, was a partial success. Change the fields in squence of utf8 &gt; latin1 &gt; blob &gt; utf8. The trick in converting to blob is it fools mysql to convert latin1 to utf8 without running any conversion algorithm. It works when checking a single field, but not for all, the whole database of ipb is kinda complex. Some field were primary field and mysql not allows them to altered to blob. I ran a script to loop through all table,all field and alter them but ended up with a bunch of error and corrupted database. </p>
+
+<p>Then i changed my focus to the mysql dump file. If i can change the latin text inside the sql file to unicode text, problem will be gone. I tried <a href="http://linux.die.net/man/1/enca">enca(1)</a> but it failed to change anything. Tried <a href="http://linux.die.net/man/1/recode">recode(1)</a> without any success.</p>
+
+<p>Then i created a script in php to read the whole sql line by line and feed them through <a href="www.php.net/manual/en/function.utf8-encode.php">utf8_encode</a>. Which made the unreadable latin text to unreadable <strong>capital letter</strong> latin.</p>
+
+<p>That was a mistake, actually i need to use <a href="www.php.net/manual/en/function.utf8-decode.php">utf8_decode</a>. So now, the texts were back to bangla, but also many(almost all) chars are missing. Only first letter of a word or one word of a sentence was there, the rest vanished into the wind.</p>
+
+<p>Next, tried <a href="http://linux.die.net/man/1/iconv">iconv(1)</a> which striped away half of the database :(</p>
+
+<h2>The Real Solution:</h2>
+
+<p>The idea is to insert the db to mysql as latin1, dump the db <strong>as latin1</strong>. Edit the dump to change it to <strong>utf8</strong> and insert it <strong>as utf8</strong>.</p>
+
+<ol>
+<li>First task is to insert the mysqldump in latin1 encoding and in latin1 collation. So i took a bit help from sed.
+<code>sh
+sed -i &#39;s/CHARSET=utf8 COLLATE=utf8_unicode_ci/CHARSET=latin1/g&#39; database.sql
+sed -i &#39;s/COLLATE utf8_unicode_ci/COLLATE latin1_bin/g&#39; database.sql
+</code></li>
+<li><p>Now i inserted this database.sql into mysql. Now we need to extract it <strong>as latin1</strong>, so applying <code>--default-character-set=latin1</code> flag.
+<code>sh
+mysqldump --default-character-set=latin1 -u user -p dbname &gt; database_latin.sql
+</code>
+I opened the database_latin.sql and saw the text was written in bangla. :D</p></li>
+<li><p>Now we need to edit the dump file and change it to utf8, as we are gonna insert it as utf8 now. again, sed to rescue.
+<code>sh
+sed -i &#39;s/SET NAMES latin1/SET NAMES utf8/g&#39; database_latin.sql
+sed -i &#39;s/CHARSET=latin1/CHARSET=utf8 COLLATE=utf8_unicode_ci/g&#39; database_latin.sql
+sed -i &#39;s/COLLATE latin1_bin/COLLATE utf8_unicode_ci/g&#39; database_latin.sql
+sed -i &#39;s/CHARACTER SET latin1/CHARACTER SET utf8/g&#39; database_latin.sql
+</code></p></li>
+<li><p>Finally i inserted this database_latin.sql to mysql and voila :D no error, clear bangla and no chars missing :D</p></li>
+</ol>
+
+<h2>Ending Thoughts:</h2>
+
+<p>If you are making a bangla or non-english site, always start with a proper collation setting. Set all table and field collation to utf8_unicode_ci or utf8_general_ci. Make sure the mysql client (your app) speaks in utf8. If you are running raw mysql query, run <code>set names utf8</code> at beginning. If using a framework or toolkit, check where to set this <strong>utf8</strong> config. These will save you from infinite PITA later.</p>
+
+<p>If you indeed missed the utf8 config and ended up in a mess like me, try to apply a solution that doesn&#39;t directy convert the encoding of the texts. You may end up with missing or corrupted chars.</p>
+
+<p>NB: If you are following this post, dont copy-paste the commands, understand and adept the commands to your scenario.
+Forgive my poor writing and let me know your thoughts in the comment section.</p>
+]]></content>
+  </entry>
+  
+</feed>

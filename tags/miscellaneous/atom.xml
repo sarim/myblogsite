@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tags: miscellaneous | Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me//tags/miscellaneous/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me//"/>
+  <updated>2013-09-07T13:23:32+06:00</updated>
+  <id>http://blog.sarim.me//</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://blog.sarim.me//2013/03/09/hello-world/"/>
+    <updated>2013-03-09T01:38:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/09/hello-world</id>
+    <content type="html"><![CDATA[<p>So, I finally managed to collect enough courage to publish a blog to the internet, Hurray !</p>
+
+<p>For a virtual_vagabond type people like me, who can&#39;t organize anything :P i think it is a daunting challenge to regularly maintain a blog.</p>
+
+<!-- more -->
+
+<p>Actually Octopress is what that encouraged me to open a blog, for a command line freak, it is just &lt;3 &lt;3 , <strong>create</strong>, <strong>manage</strong>, <strong>write new posts</strong> :D all from sweet terminal, who need anything else ?</p>
+
+<p>I&#39;ll be using the great markdown editor <a href="http://mouapp.com">Mou</a> and <a href="www.iterm2.com">iTerm2</a> for this.</p>
+
+<p><code>sys.exit(0)</code></p>
+]]></content>
+  </entry>
+  
+</feed>

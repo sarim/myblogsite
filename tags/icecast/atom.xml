@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tags: icecast | Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me//tags/icecast/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me//"/>
+  <updated>2013-09-07T13:23:32+06:00</updated>
+  <id>http://blog.sarim.me//</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Streaming a mumble session over Icecast]]></title>
+    <link href="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/"/>
+    <updated>2013-03-09T19:45:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast</id>
+    <content type="html"><![CDATA[<p>This guide is heavily based on <a href="http://www.skyehaven.net/blog/2011/03/14/mumble-icecast/">derek&#39;s guide</a> but i used liquidsoap instead of darkice and vnc for headless linux server.</p>
+
+<p>Lets say you have some users talking in a mumble server and want to brodcast that conversation but dont want  people to join and interfare but want people able to listen to. So, here&#39;s how to do that.</p>
+
+<!-- more -->
+
+<h2>Requirements:</h2>
+
+<ul>
+<li>Mumble Client</li>
+<li>PulseAudio</li>
+<li><a href="http://savonet.sourceforge.net/">Savonet Liquidsoap</a></li>
+<li>Icecast</li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>Here i&#39;m gonna do it in ubuntu.</p>
+<div class="highlight"><pre><code class="sh">apt-get install mumble pulseaudio liquidsoap liquidsoap-plugin-lame
+</code></pre></div>
+<p>If you are doing this in a headless server you&#39;ll also need vncserver. Realvnc is my favorite but tightvnc will also do.
+<code>sh
+apt-get tightvncserver
+</code></p>
+
+<p>Now install icecast
+<code>sh
+apt-get install icecast2
+</code></p>
+
+<h2>Configuration</h2>
+
+<h3>Icecast</h3>
+
+<p>if you choose not to configure icecast2 during installation here&#39;s how to do that manually.</p>
+
+<p>Open <code>/etc/icecast2/icecast.xml</code></p>
+<div class="highlight"><pre><code class="sh">nano /etc/icecast2/icecast.xml
+</code></pre></div>
+<p>There is many configuration with comments, change them if you want, but at least we need to change the default passwords. change <code>&lt;source-password&gt;</code>, <code>&lt;relay-password&gt;</code> and <code>&lt;admin-password&gt;</code></p>
+
+<p>Now enable icecast2, open <code>/etc/default/icecast2</code>
+<code>sh
+nano /etc/default/icecast2
+</code>
+change
+<code>sh
+ENABLE=true
+</code></p>
+
+<p>Now start icecast2
+<code>sh
+/etc/init.d/icecast2 start
+</code></p>
+
+<p>Point your browser to SERVER_IP:PORT to see icecast.</p>
+
+<hr>
+
+<h3>Vnc</h3>
+
+<p>Skip this if you already have installed and access to Desktop Environment.</p>
+
+<p>Now to run mumble, we need a DE. you may install lxde (as a lightweight DE)
+<code>sh
+apt-get install lxde
+</code></p>
+
+<p>Start a vnc session which will also start the <strong>X</strong> server.
+<code>sh
+vncserver
+</code>
+Set a password when asked.</p>
+
+<p>Now go to your own computer&#39;s desktop and using any VNC client, connect to you server. Credentials will be like host: <code>serverip:1</code> and your vnc password.</p>
+
+<hr>
+
+<h3>Pulseaudio</h3>
+
+<p>Assuming you were using ssh so far, now switch to DE, and start lxterminal to further complete tasks ahead.</p>
+
+<p>Now we need to create a virtual device in pulseaudio from where we&#39;ll be capturing the mumble session and to where mumble should send its output.
+To do that, run,
+<code>sh
+pactl load-module module-null-sink sink_name=stream
+</code></p>
+
+<hr>
+
+<h3>Mumble</h3>
+
+<p>Start mumble from menu or running <code>mumble</code> in terminal. Most important thing to set is </p>
+
+<ul>
+<li>Settings-&gt;Audio Output
+<code>System = PulseAudio</code>
+<code>Device = Null Output</code></li>
+</ul>
+
+<p>You can leave other configs as default.</p>
+
+<p>Now connect to desired mumble server/channel.</p>
+
+<hr>
+
+<h3>Liquidsoap</h3>
+
+<p>Now the final task, link mumble&#39;s output to icecast. It is a good idea to check out <a href="http://savonet.sourceforge.net/doc-svn/quick_start.html">quick start</a> guide which&#39;ll give you a clear idea about Liquidsoap.</p>
+
+<p>We&#39;ll create a liq script.
+<code>sh
+nano sk.liq
+</code></p>
+
+<p>Now the main tricky part, you need to change the content of the script.</p>
+<div class="highlight"><pre><code class="python"><span class="c">#!/usr/bin/liquidsoap</span>
+<span class="n">output</span><span class="o">.</span><span class="n">icecast</span><span class="p">(</span><span class="o">%</span><span class="n">mp3</span><span class="p">,</span>     <span class="n">host</span> <span class="o">=</span> <span class="s">&quot;example_host&quot;</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>      <span class="n">password</span> <span class="o">=</span> <span class="s">&quot;source_password&quot;</span><span class="p">,</span> <span class="n">mount</span> <span class="o">=</span> <span class="s">&quot;gittu&quot;</span><span class="p">,</span>     <span class="nb">input</span><span class="o">.</span><span class="n">pulseaudio</span><span class="p">(</span><span class="n">device</span> <span class="o">=</span> <span class="s">&quot;stream.monitor&quot;</span><span class="p">))</span>
+</code></pre></div>
+<p>You need to change <code>example_host</code> to your icecast server&#39;s ip or address. <code>source_password</code> to the <code>&lt;source-password&gt;</code> set in icecast.</p>
+
+<p>Now everything is set, fire things up :)</p>
+<div class="highlight"><pre><code class="sh">chmod +x sk.liq
+./sk.liq
+</code></pre></div>
+<p>Now go to icecast and listen your mumble conversation :)</p>
+
+<hr>
+
+<h3>Toubleshooting</h3>
+
+<ol>
+<li>If icecast fails to start, check that the port (default 8000) is not being used by another process. It took away 30 minutes of my life, nginx was blocking 8000 port.</li>
+<li>Try running liquidsoap in verbose mode <code>liquidsoap -v sk.liq</code> if you are having trouble with it.</li>
+</ol>
+
+<p>Thats all :D Let me know your thoughts in comment section.</p>
+]]></content>
+  </entry>
+  
+</feed>

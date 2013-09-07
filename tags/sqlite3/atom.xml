@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tags: sqlite3 | Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me//tags/sqlite3/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me//"/>
+  <updated>2013-09-07T13:23:32+06:00</updated>
+  <id>http://blog.sarim.me//</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Dealing with Chrome's Corrupt Profile]]></title>
+    <link href="http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile/"/>
+    <updated>2013-09-06T13:55:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile</id>
+    <content type="html"><![CDATA[<p>This is a common thing for any chrome user. The profile of chrome gets corrupted after sometimes and you will be provided with a &quot;Your Profile is corrupted&quot; etc… error message, and your profile is stuck, it doesn&#39;t get saved, saved cookies, site data etc… will be gone each time you close chrome. Chrome uses sqlite3 for various databases for its profile. But sqlite3 database tends to corrupt very often, especially in case of a power failure.</p>
+
+<!--more-->
+
+<p>Unfortunately sqlite doesn&#39;t have any native repair feature, unlike mysql. So fixing a sqlite3 means dump it and then create a new db from that dump file. Lets see how to do that with chrome&#39;s profile databases.</p>
+
+<p>Close chrome and follow the instructions below in terminal.</p>
+
+<ol>
+<li><p>First we need to get a list of all sqlite3 database in chrome&#39;s profile folder.</p>
+<div class="highlight"><pre><code class="sh">find ~/Library/Application<span class="se">\ </span>Support/Google/Chrome/ -print0 | xargs -0 file | grep SQLite | sed <span class="s1">&#39;s/\(.*\):.*/\1/&#39;</span> &gt; ~/chromedb.txt
+</code></pre></div>
+<p>Replace <code>~/Library/Application\ Support/Google/Chrome</code> with your chrome profile path.
+Here i&#39;m piping 4 commands, firstly i&#39;m using <code>find</code> to get all files from chrome profile, secondly using <code>xargs</code> i&#39;m checking file type of these files using <code>file</code> command, thirdly filtering the SQLite databases using <code>grep</code>, at-last using <code>sed</code> to extract the file path part from the output. Then saving it in <code>~/chromedb.txt</code></p></li>
+<li><p>Download the <a href="https://gist.github.com/sarim/6460936">repairsqlite.sh</a> script.</p>
+<div class="highlight"><pre><code class="sh">curl -o repairsqlite.sh https://gist.github.com/sarim/6460936/raw/repairsqlite.sh
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><code class="sh">wget https://gist.github.com/sarim/6460936/raw/repairsqlite.sh
+</code></pre></div>
+<p>Make it executable</p>
+<div class="highlight"><pre><code class="sh">chmod +x repairsqlite.sh
+</code></pre></div></li>
+<li><p>Now run this script with our <code>chromedb.txt</code></p>
+<div class="highlight"><pre><code class="sh">cat chromedb.txt | xargs -I db ~/repairsqlite.sh db
+</code></pre></div></li>
+<li><p>You&#39;ll see tons of text flowing through your terminal. Wait a few seconds until its done.</p></li>
+</ol>
+
+<p>Now open chrome and &quot;Profile Corrupt&quot; message will be gone and your profile will be saved again.</p>
+
+<p>Happy browsing with Chrome :)</p>
+]]></content>
+  </entry>
+  
+</feed>

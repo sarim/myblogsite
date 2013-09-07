@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Streaming a mumble session over Icecast - Gittu's Blog</title>
+  <meta name="author" content="Sarim Khan">
+
+  
+  <meta name="description" content="This guide is heavily based on derek&#39;s guide but i used liquidsoap instead of darkice and vnc for headless linux server. Lets say you have some &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Gittu's Blog" type="application/atom+xml">
+  <script src="/javascripts/twitter1.1.js" type="text/javascript"></script>
+
+<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39099560-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Gittu's Blog</a></h1>
+  
+    <h2>Yet another octopress blog</h2>
+  
+</hgroup>
+
+<section>
+  <ul id="recent_posts">
+      <li class="post">
+      <a href="http://blog.sarim.me/" alt="Home"><img src="/images/Home.png"></a>
+      <a href="http://blog.sarim.me//archives/" alt="Archives"><img src="/images/Calendar.png"></a>
+      <a href="mailto:sarim2005@gmail.com" alt="E-Mail"><img src="/images/Envelope.png"></a>
+      <a href="http://blog.sarim.me//atom.xml" alt="subscribe feed"><img src="/images/rss.png"></a>
+      </li>
+  </ul>
+</section>
+
+</header>
+  <!-- <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:blog.sarim.me/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav> -->
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Streaming a Mumble Session Over Icecast</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-09T19:45:00+06:00" pubdate data-updated="true">Mar 9<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This guide is heavily based on <a href="http://www.skyehaven.net/blog/2011/03/14/mumble-icecast/">derek&#39;s guide</a> but i used liquidsoap instead of darkice and vnc for headless linux server.</p>
+
+<p>Lets say you have some users talking in a mumble server and want to brodcast that conversation but dont want  people to join and interfare but want people able to listen to. So, here&#39;s how to do that.</p>
+
+<!-- more -->
+
+<h2>Requirements:</h2>
+
+<ul>
+<li>Mumble Client</li>
+<li>PulseAudio</li>
+<li><a href="http://savonet.sourceforge.net/">Savonet Liquidsoap</a></li>
+<li>Icecast</li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>Here i&#39;m gonna do it in ubuntu.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get install mumble pulseaudio liquidsoap liquidsoap-plugin-lame
+</span></code></pre></td></tr></table></div></figure>
+
+<p>If you are doing this in a headless server you&#39;ll also need vncserver. Realvnc is my favorite but tightvnc will also do.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get tightvncserver
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now install icecast
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get install icecast2
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2>Configuration</h2>
+
+<h3>Icecast</h3>
+
+<p>if you choose not to configure icecast2 during installation here&#39;s how to do that manually.</p>
+
+<p>Open <code>/etc/icecast2/icecast.xml</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nano /etc/icecast2/icecast.xml
+</span></code></pre></td></tr></table></div></figure>
+
+<p>There is many configuration with comments, change them if you want, but at least we need to change the default passwords. change <code>&lt;source-password&gt;</code>, <code>&lt;relay-password&gt;</code> and <code>&lt;admin-password&gt;</code></p>
+
+<p>Now enable icecast2, open <code>/etc/default/icecast2</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nano /etc/default/icecast2
+</span></code></pre></td></tr></table></div></figure>
+change
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">ENABLE</span><span class="o">=</span><span class="nb">true</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now start icecast2
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>/etc/init.d/icecast2 start
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Point your browser to SERVER_IP:PORT to see icecast.</p>
+
+<hr>
+
+<h3>Vnc</h3>
+
+<p>Skip this if you already have installed and access to Desktop Environment.</p>
+
+<p>Now to run mumble, we need a DE. you may install lxde (as a lightweight DE)
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get install lxde
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Start a vnc session which will also start the <strong>X</strong> server.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vncserver
+</span></code></pre></td></tr></table></div></figure>
+Set a password when asked.</p>
+
+<p>Now go to your own computer&#39;s desktop and using any VNC client, connect to you server. Credentials will be like host: <code>serverip:1</code> and your vnc password.</p>
+
+<hr>
+
+<h3>Pulseaudio</h3>
+
+<p>Assuming you were using ssh so far, now switch to DE, and start lxterminal to further complete tasks ahead.</p>
+
+<p>Now we need to create a virtual device in pulseaudio from where we&#39;ll be capturing the mumble session and to where mumble should send its output.
+To do that, run,
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>pactl load-module module-null-sink <span class="nv">sink_name</span><span class="o">=</span>stream
+</span></code></pre></td></tr></table></div></figure></p>
+
+<hr>
+
+<h3>Mumble</h3>
+
+<p>Start mumble from menu or running <code>mumble</code> in terminal. Most important thing to set is </p>
+
+<ul>
+<li>Settings-&gt;Audio Output
+<code>System = PulseAudio</code>
+<code>Device = Null Output</code></li>
+</ul>
+
+<p>You can leave other configs as default.</p>
+
+<p>Now connect to desired mumble server/channel.</p>
+
+<hr>
+
+<h3>Liquidsoap</h3>
+
+<p>Now the final task, link mumble&#39;s output to icecast. It is a good idea to check out <a href="http://savonet.sourceforge.net/doc-svn/quick_start.html">quick start</a> guide which&#39;ll give you a clear idea about Liquidsoap.</p>
+
+<p>We&#39;ll create a liq script.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nano sk.liq
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now the main tricky part, you need to change the content of the script.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/liquidsoap</span>
+</span><span class='line'><span class="n">output</span><span class="o">.</span><span class="n">icecast</span><span class="p">(</span><span class="o">%</span><span class="n">mp3</span><span class="p">,</span>     <span class="n">host</span> <span class="o">=</span> <span class="s">&quot;example_host&quot;</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>      <span class="n">password</span> <span class="o">=</span> <span class="s">&quot;source_password&quot;</span><span class="p">,</span> <span class="n">mount</span> <span class="o">=</span> <span class="s">&quot;gittu&quot;</span><span class="p">,</span>     <span class="nb">input</span><span class="o">.</span><span class="n">pulseaudio</span><span class="p">(</span><span class="n">device</span> <span class="o">=</span> <span class="s">&quot;stream.monitor&quot;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>You need to change <code>example_host</code> to your icecast server&#39;s ip or address. <code>source_password</code> to the <code>&lt;source-password&gt;</code> set in icecast.</p>
+
+<p>Now everything is set, fire things up <img src='/images/smileys/YM11b/smile.gif' alt='[smile]' class='smiley'/></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>chmod +x sk.liq
+</span><span class='line'>./sk.liq
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now go to icecast and listen your mumble conversation <img src='/images/smileys/YM11b/smile.gif' alt='[smile]' class='smiley'/></p>
+
+<hr>
+
+<h3>Toubleshooting</h3>
+
+<ol>
+<li>If icecast fails to start, check that the port (default 8000) is not being used by another process. It took away 30 minutes of my life, nginx was blocking 8000 port.</li>
+<li>Try running liquidsoap in verbose mode <code>liquidsoap -v sk.liq</code> if you are having trouble with it.</li>
+</ol>
+
+<p>Thats all <img src='/images/smileys/YM11b/grin.gif' alt='[grin]' class='smiley'/> Let me know your thoughts in comment section.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sarim Khan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-09T19:45:00+06:00" pubdate data-updated="true">Mar 9<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tags/icecast/'>icecast</a>, <a class='category' href='/tags/linux/'>linux</a>, <a class='category' href='/tags/liquidsoap/'>liquidsoap</a>, <a class='category' href='/tags/mumble/'>mumble</a>, <a class='category' href='/tags/pulseaudio/'>pulseaudio</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/" data-via="gittumia" data-counturl="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2013/03/09/installing-smilify-plugin-in-octopress/" title="Previous Post: Installing Smilify plugin in octopress">&laquo; Installing Smilify plugin in octopress</a>
+      
+      
+        <a class="basic-alignment right" href="/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/" title="Next Post: Mysql utf/latin collation and bangla nightmare">Mysql utf/latin collation and bangla nightmare &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/09/06/dealing-with-chromes-corrupt-profile/">Dealing with Chrome's Corrupt Profile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/09/06/site-version-plugin-for-jekyll-slash-octopress/">Site version plugin for jekyll/octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/09/06/using-twitters-embedded-timeline-as-data-source/">Using twitter's embedded timeline as data source</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/03/19/how-to-use-aria2-for-downloading-in-zypper/">How to use aria2 for downloading in zypper</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/">Mysql utf/latin collation and bangla nightmare</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/sarim">@sarim</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'sarim',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+	<div id="hiddentweet">
+	  	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/gittumia" data-chrome="nofooter noheader" data-widget-id="375613472869859328" data-tweet-limit="4">Loading tweets by @gittumia . . . </a>
+		<script id="twitter-wjs" src="http://platform.twitter.com/widgets.js" async onload="parsetwitter(4)"></script>
+	</div>
+  </ul>
+   
+     <a href="http://twitter.com/gittumia" class="twitter-follow-button" data-show-count="false">Follow @gittumia</a>
+   
+</section>
+
+<section>
+  <h1>Tag Cloud</h1>
+    <br/>
+    <span id="tag-cloud"><a href='/tags/aria2'>aria2</a> <a href='/tags/bangla'>bangla</a> <a href='/tags/charset'>charset</a> <a href='/tags/chrome'>chrome</a> <a href='/tags/collation'>collation</a> <a href='/tags/downloading'>downloading</a> <a href='/tags/encoding'>encoding</a> <a href='/tags/icecast'>icecast</a> <a href='/tags/javascript'>javascript</a> <a href='/tags/jekyll'>jekyll</a> <a href='/tags/linux'>linux</a> <a href='/tags/liquidsoap'>liquidsoap</a> <a href='/tags/miscellaneous'>miscellaneous</a> <a href='/tags/mumble'>mumble</a> <a href='/tags/mysql'>mysql</a> <a href='/tags/octopress'>octopress</a> <a href='/tags/opensuse'>opensuse</a> <a href='/tags/plugin'>plugin</a> <a href='/tags/pulseaudio'>pulseaudio</a> <a href='/tags/sqlite3'>sqlite3</a> <a href='/tags/twitter'>twitter</a> <a href='/tags/unicode'>unicode</a> <a href='/tags/utf'>utf</a> <a href='/tags/utf8'>utf8</a> <a href='/tags/zypper'>zypper</a> </span>
+</section>
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  <a href="/licence">Copyright &copy; 2013 - Sarim Khan<img id="cclogo" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"></a>&nbsp;&nbsp;-
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://github.com">Github</a></span>
+  -
+  <span class="credit">Customized Theme based on <a href="https://github.com/bijumon/oct2">oct2</a> </span>
+  |
+  <span class="credit">site version v2.0-159
+</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'gittu';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/';
+        var disqus_url = 'http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

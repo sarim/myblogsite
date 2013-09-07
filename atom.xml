@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me//atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me//"/>
+  <updated>2013-09-07T13:23:32+06:00</updated>
+  <id>http://blog.sarim.me//</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Dealing with Chrome's Corrupt Profile]]></title>
+    <link href="http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile/"/>
+    <updated>2013-09-06T13:55:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/09/06/dealing-with-chromes-corrupt-profile</id>
+    <content type="html"><![CDATA[<p>This is a common thing for any chrome user. The profile of chrome gets corrupted after sometimes and you will be provided with a &quot;Your Profile is corrupted&quot; etc… error message, and your profile is stuck, it doesn&#39;t get saved, saved cookies, site data etc… will be gone each time you close chrome. Chrome uses sqlite3 for various databases for its profile. But sqlite3 database tends to corrupt very often, especially in case of a power failure.</p>
+
+<!--more-->
+
+<p>Unfortunately sqlite doesn&#39;t have any native repair feature, unlike mysql. So fixing a sqlite3 means dump it and then create a new db from that dump file. Lets see how to do that with chrome&#39;s profile databases.</p>
+
+<p>Close chrome and follow the instructions below in terminal.</p>
+
+<ol>
+<li><p>First we need to get a list of all sqlite3 database in chrome&#39;s profile folder.</p>
+<div class="highlight"><pre><code class="sh">find ~/Library/Application<span class="se">\ </span>Support/Google/Chrome/ -print0 | xargs -0 file | grep SQLite | sed <span class="s1">&#39;s/\(.*\):.*/\1/&#39;</span> &gt; ~/chromedb.txt
+</code></pre></div>
+<p>Replace <code>~/Library/Application\ Support/Google/Chrome</code> with your chrome profile path.
+Here i&#39;m piping 4 commands, firstly i&#39;m using <code>find</code> to get all files from chrome profile, secondly using <code>xargs</code> i&#39;m checking file type of these files using <code>file</code> command, thirdly filtering the SQLite databases using <code>grep</code>, at-last using <code>sed</code> to extract the file path part from the output. Then saving it in <code>~/chromedb.txt</code></p></li>
+<li><p>Download the <a href="https://gist.github.com/sarim/6460936">repairsqlite.sh</a> script.</p>
+<div class="highlight"><pre><code class="sh">curl -o repairsqlite.sh https://gist.github.com/sarim/6460936/raw/repairsqlite.sh
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><code class="sh">wget https://gist.github.com/sarim/6460936/raw/repairsqlite.sh
+</code></pre></div>
+<p>Make it executable</p>
+<div class="highlight"><pre><code class="sh">chmod +x repairsqlite.sh
+</code></pre></div></li>
+<li><p>Now run this script with our <code>chromedb.txt</code></p>
+<div class="highlight"><pre><code class="sh">cat chromedb.txt | xargs -I db ~/repairsqlite.sh db
+</code></pre></div></li>
+<li><p>You&#39;ll see tons of text flowing through your terminal. Wait a few seconds until its done.</p></li>
+</ol>
+
+<p>Now open chrome and &quot;Profile Corrupt&quot; message will be gone and your profile will be saved again.</p>
+
+<p>Happy browsing with Chrome :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Site version plugin for jekyll/octopress]]></title>
+    <link href="http://blog.sarim.me//2013/09/06/site-version-plugin-for-jekyll-slash-octopress/"/>
+    <updated>2013-09-06T01:34:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/09/06/site-version-plugin-for-jekyll-slash-octopress</id>
+    <content type="html"><![CDATA[<p>Disclaimer: I dont know ruby. Not even know how to print hello world. So dont blame me for using bash :P</p>
+
+<p>Check my site&#39;s footer. You&#39;ll see a <code>site version ####</code>. What is it ? Its just a fancy jekyll plugin i created that shows a version based on git commit. Everytime you add a new commit to your site source, the version increases.</p>
+
+<!--more-->
+
+<p><br>  </p>
+
+<p>Q: Why need it ?</p>
+
+<p>A: It looks cool. It gives me internal peace of mind. Moreover If you publish your site in places like github pages, from version you can check if your site is deployed yet.</p>
+
+<h2>Installation</h2>
+
+<ol>
+<li>Get <a href="https://raw.github.com/sarim/sarim.github.com/source/plugins/getversion.rb">getversion.rb</a> and place it in your <code>plugins</code> folder.</li>
+<li><p>Now open any layout and add <code>{% get_version %}</code> in it. Example: I added it in my <code>_includes/custom/footer.html</code></p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;credit&quot;</span><span class="nt">&gt;</span>site version {% get_version %}<span class="nt">&lt;/span&gt;</span>
+</code></pre></div></li>
+<li><p>Since it works based on git, you need a git tag to generate a version number. If you dont have any git-tag yet, create a new tag. Note that tag name will be used as prefix in the version. To create a tag named <code>MySite</code></p>
+<div class="highlight"><pre><code class="sh">git tag -a MySite
+</code></pre></div></li>
+<li><p>Now regenerate your site using <code>rake generate</code> and you are done.</p></li>
+</ol>
+
+<p>Let me know how much you like this plugin :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using twitter's embedded timeline as data source]]></title>
+    <link href="http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source/"/>
+    <updated>2013-09-06T00:15:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/09/06/using-twitters-embedded-timeline-as-data-source</id>
+    <content type="html"><![CDATA[<p>The title is kinda ambiguous, i know. We all know that twitter has introduced api 1.1 and removed api 1.0. Now in 1.0 we could get any public user&#39;r timeline without auth. So we could just get users timeline as jsonp and create a twitter widget like &quot;Recent Tweets&quot; without any server side code. But…… those good old days are gone. Now you need a twitter client and need to make oauth-authorized request to get that data. And obviously that rules out the client side implementation as no one would publish his token,secret,key etc.. in a public accessible javascript file.</p>
+
+<!--more-->
+
+<p>Now twitter provides a widget with limited customizing functionality to embed one&#39;s tweets. But you can&#39;t use your own design with that, you are stuck with two &quot;light&quot; and &quot;dark&quot; theme twitter is so kind to provide.</p>
+
+<p>Today i came up with a hack around this widget, you still need to create a widget from twitter, but you can create your own widget with it. How ?</p>
+
+<p>Check the <a href="http://jsfiddle.net/sarim/S7AeM/embedded/result/">DEMO</a>  first.</p>
+
+<p>Now check the sources, things are pretty self-explanatory. The twitter widget creates a iframe. Interesting thing is, instead of just loading the iframe from twitter, it creates a empty iframe, then writes the html inside the iframe. The src attr of iframe remains empty, that enables us to access it freely. Thats what i did, i let it load, made it invisible by sending it off the page using css. Now i just parsed the tweets from the iframe and created my own widget.</p>
+
+<p>You can also see it in my site&#39;s sidebar.</p>
+
+<p>Let me know your ideas about this in the comments section below.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How to use aria2 for downloading in zypper]]></title>
+    <link href="http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper/"/>
+    <updated>2013-03-19T21:40:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/19/how-to-use-aria2-for-downloading-in-zypper</id>
+    <content type="html"><![CDATA[<p>Zypper, the great featureful package manager for opensuse uses curl for downloading as default. On the other side, aria2, is one of the best multi-threaded download manager available for *nix. Zypper has a aria2 plugin for a long time but usually not activated by default.</p>
+
+<p>Let&#39;s make zypper download packages in the speed of light using aria2 :D</p>
+
+<!--more-->
+
+<ol>
+<li><p>First install aria2. You can install it from repo, <code>sudo zypper in aria2</code> or from <a href="http://software.opensuse.org/package/aria2">software.opensuse.org</a></p></li>
+<li><p>Now we need to tell zypper (libzypp to be technically correct) to use aria2, passing ENV Variable <code>ZYPP_ARIA2C</code> is needed for this. Open <code>/etc/bash.bashrc</code> for editing.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo nano -w /etc/bash.bashrc
+</span></code></pre></td></tr></table></div></figure></p></li>
+<li><p>Keep pressing <code>Cntrl + v</code> for scrolling down. At the end of the file, add this line.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">export </span><span class="nv">ZYPP_ARIA2C</span><span class="o">=</span>1
+</span></code></pre></td></tr></table></div></figure>
+Save and Exit. (<code>Cntrl + X</code>, <code>Y</code>, <code>Enter</code>)</p></li>
+<li><p>Now Zypper will use aria2 for downloading as root user, but when using sudo, that ENV variable will be striped. To fix this, edit <code>/etc/sudoers</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sudo nano -w /etc/sudoers
+</span></code></pre></td></tr></table></div></figure>
+Look for this line
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Defaults <span class="nv">env_keep</span> <span class="o">=</span> <span class="s2">&quot;LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS XDG_SESSION_COOKIE&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+Add <code>ZYPP_ARIA2C</code> at the end of this line.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Defaults <span class="nv">env_keep</span> <span class="o">=</span> <span class="s2">&quot;LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS XDG_SESSION_COOKIE ZYPP_ARIA2C&quot;</span>
+</span></code></pre></td></tr></table></div></figure></p></li>
+</ol>
+
+<p>Save and Exit.</p>
+
+<p>Done. Restart terminal and try to download a package using zypper. Zypper will now use aria2. I noticed a bug though, you wont be seeing the download progress, but i can live with it, dont u ? :)</p>
+
+<p>This guide is written in openSUSE 12.3 KDE, but the process will be similiar for other versions of openSUSE.</p>
+
+<p>Happy Linuxing :D</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mysql utf/latin collation and bangla nightmare]]></title>
+    <link href="http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare/"/>
+    <updated>2013-03-18T01:54:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/18/mysql-utf-slash-latin-collation-and-bangla-nightmare</id>
+    <content type="html"><![CDATA[<p>Those who maintain a non-english/bangla blog, forum or site, this type of problems are kinda common. The most common problem is seeing <code>??????</code>, and fix: go and change collation to utf8 :D
+But my problem started from this simple (yes it looked simple :S ) problem but ended up a nightmare.</p>
+
+<!--more-->
+
+<p>I was running a <a href="http://www.invisionpower.com">ipboard</a> instance. When importing a bangla translation, the text was showing as <code>??????</code>, so i applied the common fix, changed all table and field collation to utf8_unicode_ci and ipb&#39;s encoding to utf8. Now the site became inaccessible, showing a preety &quot;Fatal ERROR : Your settings could not be read by IP.Board&quot;. That was fixed by running ipb&#39;s <code>upgradeFinish</code> script but the real problem starts now.</p>
+
+<h2>The Problem:</h2>
+
+<p>All bangla letters became this :</p>
+
+<p><img src="http://f.cl.ly/items/3J083G0k3X1D422z3s0n/Screen%20Shot%202013-03-17.png" alt="image"></p>
+
+<p>Looks pretty right ? :v</p>
+
+<p>The reason behind this was all bangla chars were inserted in mysql using <code>latin1</code> encoding. If I set mysql client&#39;s encoding to latin1 and read, i get real bangla. If I set encoding to utf8 and read, i get latin-fied bangla like the picture.</p>
+
+<h2>Failed Attempts:</h2>
+
+<p>I immediately went on a long google search and tried several solutions, but unfortunately, none of them were able to solve the problem completely. These two links (<a href="http://www.bluebox.net/about/blog/2009/07/mysql_encoding/">1</a> <a href="http://www.oreillynet.com/lpt/wlg/9022">2</a>) were a great help though, which helped to understand the problem thoroughly.</p>
+
+<p>The solution proposed in first link, was a partial success. Change the fields in squence of utf8 &gt; latin1 &gt; blob &gt; utf8. The trick in converting to blob is it fools mysql to convert latin1 to utf8 without running any conversion algorithm. It works when checking a single field, but not for all, the whole database of ipb is kinda complex. Some field were primary field and mysql not allows them to altered to blob. I ran a script to loop through all table,all field and alter them but ended up with a bunch of error and corrupted database. </p>
+
+<p>Then i changed my focus to the mysql dump file. If i can change the latin text inside the sql file to unicode text, problem will be gone. I tried <a href="http://linux.die.net/man/1/enca">enca(1)</a> but it failed to change anything. Tried <a href="http://linux.die.net/man/1/recode">recode(1)</a> without any success.</p>
+
+<p>Then i created a script in php to read the whole sql line by line and feed them through <a href="www.php.net/manual/en/function.utf8-encode.php">utf8_encode</a>. Which made the unreadable latin text to unreadable <strong>capital letter</strong> latin.</p>
+
+<p>That was a mistake, actually i need to use <a href="www.php.net/manual/en/function.utf8-decode.php">utf8_decode</a>. So now, the texts were back to bangla, but also many(almost all) chars are missing. Only first letter of a word or one word of a sentence was there, the rest vanished into the wind.</p>
+
+<p>Next, tried <a href="http://linux.die.net/man/1/iconv">iconv(1)</a> which striped away half of the database :(</p>
+
+<h2>The Real Solution:</h2>
+
+<p>The idea is to insert the db to mysql as latin1, dump the db <strong>as latin1</strong>. Edit the dump to change it to <strong>utf8</strong> and insert it <strong>as utf8</strong>.</p>
+
+<ol>
+<li>First task is to insert the mysqldump in latin1 encoding and in latin1 collation. So i took a bit help from sed.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sed -i <span class="s1">&#39;s/CHARSET=utf8 COLLATE=utf8_unicode_ci/CHARSET=latin1/g&#39;</span> database.sql
+</span><span class='line'>sed -i <span class="s1">&#39;s/COLLATE utf8_unicode_ci/COLLATE latin1_bin/g&#39;</span> database.sql
+</span></code></pre></td></tr></table></div></figure></li>
+<li><p>Now i inserted this database.sql into mysql. Now we need to extract it <strong>as latin1</strong>, so applying <code>--default-character-set=latin1</code> flag.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mysqldump --default-character-set<span class="o">=</span>latin1 -u user -p dbname &gt; database_latin.sql
+</span></code></pre></td></tr></table></div></figure>
+I opened the database_latin.sql and saw the text was written in bangla. :D</p></li>
+<li><p>Now we need to edit the dump file and change it to utf8, as we are gonna insert it as utf8 now. again, sed to rescue.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>sed -i <span class="s1">&#39;s/SET NAMES latin1/SET NAMES utf8/g&#39;</span> database_latin.sql
+</span><span class='line'>sed -i <span class="s1">&#39;s/CHARSET=latin1/CHARSET=utf8 COLLATE=utf8_unicode_ci/g&#39;</span> database_latin.sql
+</span><span class='line'>sed -i <span class="s1">&#39;s/COLLATE latin1_bin/COLLATE utf8_unicode_ci/g&#39;</span> database_latin.sql
+</span><span class='line'>sed -i <span class="s1">&#39;s/CHARACTER SET latin1/CHARACTER SET utf8/g&#39;</span> database_latin.sql
+</span></code></pre></td></tr></table></div></figure></p></li>
+<li><p>Finally i inserted this database_latin.sql to mysql and voila :D no error, clear bangla and no chars missing :D</p></li>
+</ol>
+
+<h2>Ending Thoughts:</h2>
+
+<p>If you are making a bangla or non-english site, always start with a proper collation setting. Set all table and field collation to utf8_unicode_ci or utf8_general_ci. Make sure the mysql client (your app) speaks in utf8. If you are running raw mysql query, run <code>set names utf8</code> at beginning. If using a framework or toolkit, check where to set this <strong>utf8</strong> config. These will save you from infinite PITA later.</p>
+
+<p>If you indeed missed the utf8 config and ended up in a mess like me, try to apply a solution that doesn&#39;t directy convert the encoding of the texts. You may end up with missing or corrupted chars.</p>
+
+<p>NB: If you are following this post, dont copy-paste the commands, understand and adept the commands to your scenario.
+Forgive my poor writing and let me know your thoughts in the comment section.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Streaming a mumble session over Icecast]]></title>
+    <link href="http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast/"/>
+    <updated>2013-03-09T19:45:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/09/streaming-a-mumble-session-over-icecast</id>
+    <content type="html"><![CDATA[<p>This guide is heavily based on <a href="http://www.skyehaven.net/blog/2011/03/14/mumble-icecast/">derek&#39;s guide</a> but i used liquidsoap instead of darkice and vnc for headless linux server.</p>
+
+<p>Lets say you have some users talking in a mumble server and want to brodcast that conversation but dont want  people to join and interfare but want people able to listen to. So, here&#39;s how to do that.</p>
+
+<!-- more -->
+
+<h2>Requirements:</h2>
+
+<ul>
+<li>Mumble Client</li>
+<li>PulseAudio</li>
+<li><a href="http://savonet.sourceforge.net/">Savonet Liquidsoap</a></li>
+<li>Icecast</li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>Here i&#39;m gonna do it in ubuntu.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get install mumble pulseaudio liquidsoap liquidsoap-plugin-lame
+</span></code></pre></td></tr></table></div></figure>
+
+<p>If you are doing this in a headless server you&#39;ll also need vncserver. Realvnc is my favorite but tightvnc will also do.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get tightvncserver
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now install icecast
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get install icecast2
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2>Configuration</h2>
+
+<h3>Icecast</h3>
+
+<p>if you choose not to configure icecast2 during installation here&#39;s how to do that manually.</p>
+
+<p>Open <code>/etc/icecast2/icecast.xml</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nano /etc/icecast2/icecast.xml
+</span></code></pre></td></tr></table></div></figure>
+
+<p>There is many configuration with comments, change them if you want, but at least we need to change the default passwords. change <code>&lt;source-password&gt;</code>, <code>&lt;relay-password&gt;</code> and <code>&lt;admin-password&gt;</code></p>
+
+<p>Now enable icecast2, open <code>/etc/default/icecast2</code>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nano /etc/default/icecast2
+</span></code></pre></td></tr></table></div></figure>
+change
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">ENABLE</span><span class="o">=</span><span class="nb">true</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now start icecast2
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>/etc/init.d/icecast2 start
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Point your browser to SERVER_IP:PORT to see icecast.</p>
+
+<hr>
+
+<h3>Vnc</h3>
+
+<p>Skip this if you already have installed and access to Desktop Environment.</p>
+
+<p>Now to run mumble, we need a DE. you may install lxde (as a lightweight DE)
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>apt-get install lxde
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Start a vnc session which will also start the <strong>X</strong> server.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vncserver
+</span></code></pre></td></tr></table></div></figure>
+Set a password when asked.</p>
+
+<p>Now go to your own computer&#39;s desktop and using any VNC client, connect to you server. Credentials will be like host: <code>serverip:1</code> and your vnc password.</p>
+
+<hr>
+
+<h3>Pulseaudio</h3>
+
+<p>Assuming you were using ssh so far, now switch to DE, and start lxterminal to further complete tasks ahead.</p>
+
+<p>Now we need to create a virtual device in pulseaudio from where we&#39;ll be capturing the mumble session and to where mumble should send its output.
+To do that, run,
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>pactl load-module module-null-sink <span class="nv">sink_name</span><span class="o">=</span>stream
+</span></code></pre></td></tr></table></div></figure></p>
+
+<hr>
+
+<h3>Mumble</h3>
+
+<p>Start mumble from menu or running <code>mumble</code> in terminal. Most important thing to set is </p>
+
+<ul>
+<li>Settings-&gt;Audio Output
+<code>System = PulseAudio</code>
+<code>Device = Null Output</code></li>
+</ul>
+
+<p>You can leave other configs as default.</p>
+
+<p>Now connect to desired mumble server/channel.</p>
+
+<hr>
+
+<h3>Liquidsoap</h3>
+
+<p>Now the final task, link mumble&#39;s output to icecast. It is a good idea to check out <a href="http://savonet.sourceforge.net/doc-svn/quick_start.html">quick start</a> guide which&#39;ll give you a clear idea about Liquidsoap.</p>
+
+<p>We&#39;ll create a liq script.
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>nano sk.liq
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now the main tricky part, you need to change the content of the script.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/liquidsoap</span>
+</span><span class='line'><span class="n">output</span><span class="o">.</span><span class="n">icecast</span><span class="p">(</span><span class="o">%</span><span class="n">mp3</span><span class="p">,</span>     <span class="n">host</span> <span class="o">=</span> <span class="s">&quot;example_host&quot;</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>      <span class="n">password</span> <span class="o">=</span> <span class="s">&quot;source_password&quot;</span><span class="p">,</span> <span class="n">mount</span> <span class="o">=</span> <span class="s">&quot;gittu&quot;</span><span class="p">,</span>     <span class="nb">input</span><span class="o">.</span><span class="n">pulseaudio</span><span class="p">(</span><span class="n">device</span> <span class="o">=</span> <span class="s">&quot;stream.monitor&quot;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>You need to change <code>example_host</code> to your icecast server&#39;s ip or address. <code>source_password</code> to the <code>&lt;source-password&gt;</code> set in icecast.</p>
+
+<p>Now everything is set, fire things up :)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>chmod +x sk.liq
+</span><span class='line'>./sk.liq
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now go to icecast and listen your mumble conversation :)</p>
+
+<hr>
+
+<h3>Toubleshooting</h3>
+
+<ol>
+<li>If icecast fails to start, check that the port (default 8000) is not being used by another process. It took away 30 minutes of my life, nginx was blocking 8000 port.</li>
+<li>Try running liquidsoap in verbose mode <code>liquidsoap -v sk.liq</code> if you are having trouble with it.</li>
+</ol>
+
+<p>Thats all :D Let me know your thoughts in comment section.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Installing Smilify plugin in octopress]]></title>
+    <link href="http://blog.sarim.me//2013/03/09/installing-smilify-plugin-in-octopress/"/>
+    <updated>2013-03-09T02:42:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/09/installing-smilify-plugin-in-octopress</id>
+    <content type="html"><![CDATA[<p>So, I just installed octopress and published a hello world post, but the smilies(emoticons) didn&#39;t converted to icons :O</p>
+
+<p>No Worry, i asked uncle G and now writing down the procedure in case i forgot it in future :P</p>
+
+<!-- more -->
+
+<h2>Installation:</h2>
+
+<p>The smilify plugin is here <a href="https://github.com/SaswatPadhi/jekyll_smilify">jekyll_smilify</a> </p>
+<div class="highlight"><pre><code class="text">git clone git://github.com/SaswatPadhi/jekyll_smilify.git
+</code></pre></div>
+<p>Assuming we cloned octopress to <code>~/octopress</code> and jekyll_smilify to <code>~/jekyll_smilify</code></p>
+<div class="highlight"><pre><code class="text">cd jekyll_smilify/
+cp plugins/smilify.rb ~/octopress/plugins/
+cp -r source/images/smileys ~/octopress/source/images/
+cp -r source/_include/smileys/ ~/octopress/source/_includes/smileys/
+</code></pre></div>
+<p>Placing things in write place is done. Now need to enable the contents to filter through Smilify.</p>
+
+<h2>Activation: </h2>
+
+<p>Open <code>~/octopress/source/_layouts/default.html</code> and replace</p>
+<div class="highlight"><pre><code class="text">{{ content | expand_urls: root_url }}
+</code></pre></div>
+<p>with</p>
+<div class="highlight"><pre><code class="text">{{ content | expand_urls: root_url | smilify }}
+</code></pre></div>
+<p>Then, open <code>~/octopress/source/_layouts/page.html</code> and replace</p>
+<div class="highlight"><pre><code class="text">{{ content }}
+</code></pre></div>
+<p>with</p>
+<div class="highlight"><pre><code class="text">{{ content | smilify }}
+</code></pre></div>
+<h2>Optional:</h2>
+
+<p>I see the css of the octopress theme was making the smiles to have a border around it and drop-shadow applied, which looks ugly. To fix this,</p>
+
+<p>Open <code>~/octopresssass/custom/_styles.scss</code> and add</p>
+<div class="highlight"><pre><code class="text">img.smiley { border : none ; box-shadow: 0 0 0 0 }
+</code></pre></div>
+<p><strong>All Done</strong> :D</p>
+
+<p><strong>NB:</strong> We need to active the plugin again after installing a new theme. </p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://blog.sarim.me//2013/03/09/hello-world/"/>
+    <updated>2013-03-09T01:38:00+06:00</updated>
+    <id>http://blog.sarim.me//2013/03/09/hello-world</id>
+    <content type="html"><![CDATA[<p>So, I finally managed to collect enough courage to publish a blog to the internet, Hurray !</p>
+
+<p>For a virtual_vagabond type people like me, who can&#39;t organize anything :P i think it is a daunting challenge to regularly maintain a blog.</p>
+
+<!-- more -->
+
+<p>Actually Octopress is what that encouraged me to open a blog, for a command line freak, it is just &lt;3 &lt;3 , <strong>create</strong>, <strong>manage</strong>, <strong>write new posts</strong> :D all from sweet terminal, who need anything else ?</p>
+
+<p>I&#39;ll be using the great markdown editor <a href="http://mouapp.com">Mou</a> and <a href="www.iterm2.com">iTerm2</a> for this.</p>
+
+<p><code>sys.exit(0)</code></p>
+]]></content>
+  </entry>
+  
+</feed>
