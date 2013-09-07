@@ -21,11 +21,11 @@ var github = (function(){
             repos.push(data.data[i]);
           }
           repos.sort(function(a, b) {
-            var aDate = new Date(a.pushed_at).valueOf(),
-                bDate = new Date(b.pushed_at).valueOf();
+            var aStar = a.watchers,
+                bStar = b.watchers;
 
-            if (aDate === bDate) { return 0; }
-            return aDate > bDate ? -1 : 1;
+            if (aStar === bStar) { return 0; }
+            return aStar > bStar ? -1 : 1;
           });
 
           if (options.count) { repos.splice(options.count); }
