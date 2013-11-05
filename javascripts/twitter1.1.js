@@ -2,7 +2,7 @@ function parsetwitter(){
     frms = document.getElementsByTagName("iframe");
     for (i=0;i<frms.length;++i){
         if (frms[i].id.search("twitter-widget-") !== -1){
-            tweets = frms[i].contentWindow.document.body.getElementsByClassName("e-entry-content");
+            tweets = frms[i].contentWindow.document.body.getElementsByClassName("e-entry-title");
             if (tweets.length == 0) return setTimeout(parsetwitter,500);
             
             tweetmeta = frms[i].contentWindow.document.body.getElementsByClassName("permalink");
