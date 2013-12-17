@@ -4,7 +4,7 @@
   <title><![CDATA[Tags: isolinux | Gittu's Blog]]></title>
   <link href="http://blog.sarim.me/tags/isolinux/atom.xml" rel="self"/>
   <link href="http://blog.sarim.me/"/>
-  <updated>2013-12-18T03:43:33+06:00</updated>
+  <updated>2013-12-18T03:51:56+06:00</updated>
   <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
@@ -27,7 +27,7 @@
 
 <!--more-->
 
-<p>Now i want to persist some changes, i installed some packages, created some files, i want to have then when i boot this live again. Easy, just add some persistent space when creating the live usb. But if i want to do that in virtualbox ? What if i dont want to reboot my pc, i want do my other tasks and to try out ubuntu in parallel ? Voila, install that ubuntu inside virtualbox. OK, but now i dont want to waste few gigs of my disk space (not to mention the time to install ubuntu). I want to use persistance with that live system. There was no way till now :( </p>
+<p>Now i want to persist some changes, i installed some packages, created some files, i want to have them when i boot this live system again. Easy, just add some persistent space when creating the live usb. But if i want to do that in virtualbox ? What if i dont want to reboot my pc, i want do my other tasks and want to try out ubuntu in parallel ? Voila! install that ubuntu inside virtualbox. OK, but now i dont want to waste a few gigs of my disk space (not to mention the time to install ubuntu). I want to use persistance with that live system. There was no way till now :( </p>
 
 <p>But fear not, Thats what i&#39;m going to do now :D I&#39;m gonna make a virtualbox image from ubuntu iso, adding a persistent space with it in the process.</p>
 
@@ -57,13 +57,14 @@ total 2097152
 <div class="highlight"><pre><code class="text">$ open -a Disk\ Utility ubuntu.img
 </code></pre></div></li>
 <li><p>In Disk Utility, right click on the <code>ubuntu.img</code> in the left side pane. Select <code>Open Disk Image</code> from popup menu. It&#39;ll show a error msg.</p></li>
-<li><p>Now check the disk listing, you&#39;ll see a new disk added at the end. It is <code>/dev/disk6</code> for me.
-    $ diskutil list</p>
-<div class="highlight"><pre><code class="text">/dev/disk6
+<li><p>Now check the disk listing, you&#39;ll see a new disk added at the end. It is <code>/dev/disk6</code> for me.</p>
+<div class="highlight"><pre><code class="text">$ diskutil list
+
+/dev/disk6
    #:                       TYPE NAME                    SIZE       IDENTIFIER
    0:                                                   *1.1 GB     disk6
 </code></pre></div>
-<p>Yay ! our bullshit disk is registered in the system (y)</p></li>
+<p>Yay ! our bullshit disk is registered in the system :D</p></li>
 <li><p>Now lets partition the disk. We are going to create a <code>fat32</code> partition named <code>UBUNTULIVE</code>.</p>
 <div class="highlight"><pre><code class="text">$ diskutil partitionDisk /dev/disk6 1 MBRFormat fat32 UBUNTULIVE 100%
 Started partitioning on disk6
