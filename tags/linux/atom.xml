@@ -4,7 +4,7 @@
   <title><![CDATA[Tags: linux | Gittu's Blog]]></title>
   <link href="http://blog.sarim.me/tags/linux/atom.xml" rel="self"/>
   <link href="http://blog.sarim.me/"/>
-  <updated>2013-11-06T02:47:40+06:00</updated>
+  <updated>2013-12-18T03:43:33+06:00</updated>
   <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
@@ -12,6 +12,105 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to make persistent ubuntu live virtualbox image]]></title>
+    <link href="http://blog.sarim.me/2013/12/18/how-to-make-persistent-ubuntu-live-virtualbox-image/"/>
+    <updated>2013-12-18T02:44:00+06:00</updated>
+    <id>http://blog.sarim.me/2013/12/18/how-to-make-persistent-ubuntu-live-virtualbox-image</id>
+    <content type="html"><![CDATA[<p>OK, i&#39;ve read the title, wtf is that ? So first i&#39;m going to explain what i&#39;m going to do, and why i&#39;m doing it. When we want to try ubuntu without installing, we have two option,</p>
+
+<ol>
+<li>Throw the iso into virtualbox and taste the new system.</li>
+<li>Make a live usb disk and boot my computer from it.</li>
+</ol>
+
+<!--more-->
+
+<p>Now i want to persist some changes, i installed some packages, created some files, i want to have then when i boot this live again. Easy, just add some persistent space when creating the live usb. But if i want to do that in virtualbox ? What if i dont want to reboot my pc, i want do my other tasks and to try out ubuntu in parallel ? Voila, install that ubuntu inside virtualbox. OK, but now i dont want to waste few gigs of my disk space (not to mention the time to install ubuntu). I want to use persistance with that live system. There was no way till now :( </p>
+
+<p>But fear not, Thats what i&#39;m going to do now :D I&#39;m gonna make a virtualbox image from ubuntu iso, adding a persistent space with it in the process.</p>
+
+<h1>Requirement</h1>
+
+<ol>
+<li>Virtualbox.</li>
+<li>Unetbootin.</li>
+</ol>
+
+<h1>Procedure</h1>
+
+<p>I did this in mac, but pretty same process will be applicable for linux too (hopefully). Now head over to terminal and follow the steps.</p>
+
+<ol>
+<li><p>Lets create a folder and do all the bullshitting inside it.</p>
+<div class="highlight"><pre><code class="text">$ mkdir ubuntulive
+$ cd ubuntulive
+</code></pre></div></li>
+<li><p>Lets make a empty 1.0GB image to hold all that bullshit.</p>
+<div class="highlight"><pre><code class="text">$ dd if=/dev/zero of=ubuntu.img bs=1m count=1024
+$ ls -lsh
+total 2097152
+2097152 -rw-r--r--  1 sarim  staff   1.0G Dec 18 02:42 ubuntu.img
+</code></pre></div></li>
+<li><p>Bullshit container creation done, now register this bullshit as disk in the system.</p>
+<div class="highlight"><pre><code class="text">$ open -a Disk\ Utility ubuntu.img
+</code></pre></div></li>
+<li><p>In Disk Utility, right click on the <code>ubuntu.img</code> in the left side pane. Select <code>Open Disk Image</code> from popup menu. It&#39;ll show a error msg.</p></li>
+<li><p>Now check the disk listing, you&#39;ll see a new disk added at the end. It is <code>/dev/disk6</code> for me.
+    $ diskutil list</p>
+<div class="highlight"><pre><code class="text">/dev/disk6
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:                                                   *1.1 GB     disk6
+</code></pre></div>
+<p>Yay ! our bullshit disk is registered in the system (y)</p></li>
+<li><p>Now lets partition the disk. We are going to create a <code>fat32</code> partition named <code>UBUNTULIVE</code>.</p>
+<div class="highlight"><pre><code class="text">$ diskutil partitionDisk /dev/disk6 1 MBRFormat fat32 UBUNTULIVE 100%
+Started partitioning on disk6
+Unmounting disk
+Creating the partition map
+Waiting for the disks to reappear
+Formatting disk6s1 as MS-DOS (FAT32) with name UBUNTULIVE
+512 bytes per physical sector
+/dev/rdisk6s1: 2093024 sectors in 261628 FAT32 clusters (4096 bytes/cluster)
+bps=512 spc=8 res=32 nft=2 mid=0xf8 spt=32 hds=128 hid=2 drv=0x80 bsec=2097150 bspf=2044 rdcl=2 infs=1 bkbs=6
+Mounting disk
+Finished partitioning on disk6
+/dev/disk6
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:     FDisk_partition_scheme                        *1.1 GB     disk6
+   1:                 DOS_FAT_32 UBUNTULIVE              1.1 GB     disk6s1
+</code></pre></div></li>
+<li><p>Now the <code>UBUNTULIVE</code> drive will be mounted in finder. Open <code>Unetbootin</code>. Select the iso, enter some how much space you want for persistance. Select <code>/dev/disk6s1</code> in <code>Drive</code>. Click OK and Let it finish making the live disk. It happens in a snap in my ssd powered system, your experience may vary.</p>
+
+<p><img src="http://cl.ly/T0hy/Screen%20Shot%202013-12-18%20at%202.48.37%20AM.jpg" alt="Unetbootin"></p></li>
+<li><p>After unetbootin is finished, Go to <code>UBUNTULIVE</code> drive. Inside the drive, open <code>syslinux.cfg</code> in a text editor. (I used Textmate). Add the following lines at the end.</p>
+<div class="highlight"><pre><code class="text">label ubnentry6
+menu label ^Try Ubuntu without installing in Gittu way
+kernel /casper/vmlinuz
+append initrd=/casper/initrd.lz live-media=/dev/sda1 live-media-path=/casper/ file=/cdrom/preseed/ubuntu.seed ignore_uuid boot=casper quiet splash -- persistent
+</code></pre></div></li>
+<li><p>Save the file and unmount/eject the <code>UBUNTULIVE</code> drive.</p></li>
+<li><p>GUI time is over, back to terminal. Now our image is ready. Convert it for virtualbox.</p>
+<div class="highlight"><pre><code class="text">$ VBoxManage convertfromraw -format VDI ubuntu.img ubuntu_vbox.vdi
+Converting from raw image file=&quot;ubuntu.img&quot; to file=&quot;ubuntu_vbox.vdi&quot;...
+Creating dynamic image with size 1073741824 bytes (1024MB)...
+</code></pre></div></li>
+<li><p>Phew! Done :D Now open virtualbox. Create a new vm/Edit Existing, in storage section, select <code>Choose Existing Disk</code> and select this <code>ubuntu_vbox.vdi</code> there. Boot the vm, in unetbootin menu, select the last option and press enter to boot.</p>
+
+<p><img src="http://cl.ly/T0RH/Screen%20Shot%202013-12-18%20at%202.51.41%20AM.jpg" alt="image"></p></li>
+</ol>
+
+<h3>Notes</h3>
+
+<ul>
+<li>For linux, step 3 to 6 can be done using gparted. <code>$ gparted ./ubuntu.img</code> will do.</li>
+<li>This guide is based on ubuntu 13.10. A new boot flag <code>live-media</code> is needed for 13.10. That was taked from <a href="http://schmidi2.wordpress.com/2013/11/19/error-reading-libudevhwdb-bin-no-such-file-or-directory/">schmidi2.wordpress.com</a>. If you are using another version, you may ommit the flag in step 8.</li>
+</ul>
+
+<p>Now, this thing still wasted 2gigs of disk space, didn&#39;t it ? So whats the point ? There is none :v you may take it as bullshitting, or a scienctific experiment for educational purposes, your wish. Good luck and Happy linuxing (y)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How to use aria2 for downloading in zypper]]></title>
