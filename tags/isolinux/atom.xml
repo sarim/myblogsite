@@ -4,7 +4,7 @@
   <title><![CDATA[Tags: isolinux | Gittu's Blog]]></title>
   <link href="http://blog.sarim.me/tags/isolinux/atom.xml" rel="self"/>
   <link href="http://blog.sarim.me/"/>
-  <updated>2013-12-18T03:51:56+06:00</updated>
+  <updated>2013-12-18T21:07:56+06:00</updated>
   <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
@@ -106,7 +106,8 @@ Creating dynamic image with size 1073741824 bytes (1024MB)...
 
 <ul>
 <li>For linux, step 3 to 6 can be done using gparted. <code>$ gparted ./ubuntu.img</code> will do.</li>
-<li>This guide is based on ubuntu 13.10. A new boot flag <code>live-media</code> is needed for 13.10. That was taked from <a href="http://schmidi2.wordpress.com/2013/11/19/error-reading-libudevhwdb-bin-no-such-file-or-directory/">schmidi2.wordpress.com</a>. If you are using another version, you may ommit the flag in step 8.</li>
+<li>This guide is based on ubuntu 13.10. A new boot flag <code>live-media</code> is needed for 13.10. That was taken from <a href="http://schmidi2.wordpress.com/2013/11/19/error-reading-libudevhwdb-bin-no-such-file-or-directory/">schmidi2.wordpress.com</a>. If you are using another version, you may ommit the flag in step 8.</li>
+<li>Ubuntu ISO and 100MB persistent space fits in 1GB (1024MB) image, but if you want to increase persistent space, you need to increase image size (the <code>count</code> param) in step 2 too. </li>
 </ul>
 
 <p>Now, this thing still wasted 2gigs of disk space, didn&#39;t it ? So whats the point ? There is none :v you may take it as bullshitting, or a scienctific experiment for educational purposes, your wish. Good luck and Happy linuxing (y)</p>
