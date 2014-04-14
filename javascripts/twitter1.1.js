@@ -1,24 +1,19 @@
-function parsetwitter(){
-    frms = document.getElementsByTagName("iframe");
-    for (i=0;i<frms.length;++i){
-        if (frms[i].id.search("twitter-widget-") !== -1){
-            tweets = frms[i].contentWindow.document.body.getElementsByClassName("e-entry-title");
-            if (tweets.length == 0) return setTimeout(parsetwitter,500);
-            
-            tweetmeta = frms[i].contentWindow.document.body.getElementsByClassName("permalink");
-            content = "";
-            
-            for (p=0;p<tweets.length;++p){
-                txt = tweets[p].textContent;
-                link = tweetmeta[p].href;
-                ttime = tweetmeta[p].textContent;
-                content += '<li>'+'<p>'+'<a class="tweetdate" href="' + link + '">'+ ttime +'</a>'+ linkifyTweet(txt.replace(/\n/g, '<br>')) +'</p>'+'</li>';
-                
-            }
-            
-            document.getElementById('tweets').innerHTML = content;
-        }
-    }
+function parsetwitter() {
+    var twitDoc = document.querySelector("iframe.twitter-timeline").contentWindow.document;
+    var tweets = twitDoc.body.getElementsByClassName("e-entry-title");
+    if (tweets.length == 0) return setTimeout(parsetwitter,500);
+    
+    var tweetmeta = twitDoc.body.getElementsByClassName("permalink");
+    var content = "";
+    
+    for (p=0;p<tweets.length;++p){
+        var txt = tweets[p].textContent;
+        var link = tweetmeta[p].href;
+        var ttime = tweetmeta[p].textContent;
+        content += '<li>'+'<p>'+'<a class="tweetdate" href="' + link + '">'+ ttime +'</a>'+ linkifyTweet(txt.replace(/\n/g, '<br>')) +'</p>'+'</li>';
+        
+    }    
+    document.getElementById('tweets').innerHTML = content;
 }
 
 
