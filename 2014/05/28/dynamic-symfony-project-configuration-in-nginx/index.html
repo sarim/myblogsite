@@ -1,0 +1,414 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Dynamic symfony project configuration in nginx - Gittu's Blog</title>
+  <meta name="author" content="Sarim Khan">
+
+  
+  
+  <meta name="description" content="When we start a new symfony/laravel/{enter random framework here} project there are two tasks we need to do first. Create a new vhost, and add new &hellip;">
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Gittu's Blog" type="application/atom+xml">
+  <script src="/javascripts/twitter1.1.js" type="text/javascript"></script>
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39099560-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Gittu's Blog</a></h1>
+  
+    <h2>Yet another octopress blog</h2>
+  
+</hgroup>
+
+<section>
+  <ul id="recent_posts">
+      <li class="post">
+      <a href="http://blog.sarim.me" alt="Home"><img src="/images/Home.png"></a>
+      <a href="http://blog.sarim.me/archives/" alt="Archives"><img src="/images/Calendar.png"></a>
+      <a href="mailto:sarim2005@gmail.com" alt="E-Mail"><img src="/images/Envelope.png"></a>
+      <a href="http://blog.sarim.me/atom.xml" alt="subscribe feed"><img src="/images/rss.png"></a>
+      </li>
+  </ul>
+</section>
+
+</header>
+  <!-- <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:blog.sarim.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav> -->
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Dynamic Symfony Project Configuration in Nginx</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-28T03:58:00+06:00" pubdate data-updated="true">May 28<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>When we start a new symfony/laravel/{enter random framework here} project there are two tasks we need to do first. Create a new vhost, and add new entry in /etc/hosts. Today i&#39;m trying to implement a little nginx trick to eliminate the first task.</p>
+
+<!--more-->
+
+<p><img src="http://i.imgur.com/wSwV5W0.jpg" alt="image"></p>
+
+<p>I&#39;m not sure <code>dynamic</code> is the right word in the title, But i can&#39;t find a more suitable word. I&#39;ll create a generic nginx vhost/config that&#39;ll serve all symfony project.</p>
+
+<p>Create a new file in nginx config directory, Ex: <code>/etc/nginx/conf.d/symfony.conf</code></p>
+
+<p>Put the following config in it. Be sure to reload/restart nginx afterwards.</p>
+<div class="highlight"><pre><code class="text">server {
+
+    listen       80;
+
+    server_name ~^(?&lt;project_name&gt;[^\.]*)\.(?&lt;env&gt;prod|dev)$;
+
+    set $app &quot;app.php&quot;;
+
+    if ($env = &quot;dev&quot; ) {
+        set $app &quot;app_dev.php&quot;;
+    }
+
+    root /Users/sarim/Sites/php55/$project_name/web;
+
+    index $app index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /$app?$args;
+    }
+
+    location ~ ^/(app|app_dev|config)\.php(/|$) {
+        fastcgi_pass   unix:/usr/local/var/run/php55.sock;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+</code></pre></div>
+<p>Put your php-fpm address in <code>fastcgi_pass</code>. You&#39;ll also need to edit the <code>/Users/sarim/Sites/php55</code> part. Thats where i put my php framework projects. Now lets assume you have a project named <code>matrix</code> in that folder. Now go ahead and add following lines into <code>/etc/hosts</code></p>
+<div class="highlight"><pre><code class="text">127.0.0.1 matrix.dev matrix.prod
+</code></pre></div>
+<p>Now open <a href="http://matrix.dev/">http://matrix.dev/</a> and <a href="http://matrix.prod/">http://matrix.prod/</a> in your browser. You should see the <code>matrix</code> project in dev and prod mode. Try any other project in that folder. It&#39;ll work <img src='/images/smileys/YM11b/smile.gif' alt='[smile]' class='smiley'/></p>
+
+<p>So whats happening here ? the magic is in the server_name line. A little bit of regex that matches anything but dot, goes into <code>project_name</code> variable. And <code>prod</code> or <code>dev</code> after the dot, goes <code>env</code> variable. After that we set <code>app</code> variable to <code>app.php</code> assuming our environment is prod. But if env == dev, it sets to <code>app_dev.php</code>. This <code>app</code> variable is used later to set which front controller we send user request to.</p>
+
+<p>PS: You can further automate the process by installing a intelligent DNS server and configure it to send <code>.*dev|prod</code> requests to <code>127.0.0.1</code>.</p>
+
+<p>Happy Coding.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sarim Khan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-28T03:58:00+06:00" pubdate data-updated="true">May 28<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tags/nginx/'>nginx,</a>, <a class='category' href='/tags/php/'>php</a>, <a class='category' href='/tags/symfony/'>symfony,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx/" data-via="gittumia" data-counturl="http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2013/12/18/how-to-make-persistent-ubuntu-live-virtualbox-image/" title="Previous Post: How to make persistent ubuntu live virtualbox image">&laquo; How to make persistent ubuntu live virtualbox image</a>
+      
+      
+    </p>
+  </footer>
+</article>
+<section>
+  <!-- gittu-blog-post -->
+  <ins class="adsbygoogle gittu-blog-post"
+       style="display:inline-block"
+       data-ad-client="ca-pub-0262189255437030"
+       data-ad-slot="8056430186"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</section>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2014/05/28/dynamic-symfony-project-configuration-in-nginx/">Dynamic symfony project configuration in nginx</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/12/18/how-to-make-persistent-ubuntu-live-virtualbox-image/">How to make persistent ubuntu live virtualbox image</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/09/06/dealing-with-chromes-corrupt-profile/">Dealing with Chrome's Corrupt Profile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/09/06/site-version-plugin-for-jekyll-slash-octopress/">Site version plugin for jekyll/octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/09/06/using-twitters-embedded-timeline-as-data-source/">Using twitter's embedded timeline as data source</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/sarim">@sarim</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'sarim',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+	<div id="hiddentweet">
+	  	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/gittumia" data-chrome="nofooter noheader" data-widget-id="375613472869859328" data-tweet-limit="4">Loading tweets by @gittumia . . . </a>
+		<script id="twitter-wjs" src="http://platform.twitter.com/widgets.js" async onload="parsetwitter(4)"></script>
+	</div>
+  </ul>
+   
+     <a href="http://twitter.com/gittumia" class="twitter-follow-button" data-show-count="true">Follow @gittumia</a>
+   
+</section>
+
+<section>
+	<h1>Ads</h1>
+    <br/>
+    <span id="ad-cloud">
+		<!-- gittu blog sidebar -->
+		<ins class="adsbygoogle gittu-blog-sidebar"
+		     style="display:inline-block"
+		     data-ad-client="ca-pub-0262189255437030"
+		     data-ad-slot="8833976185"></ins>
+		<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
+    </span>
+</section>
+<section>
+  <h1>Tag Cloud</h1>
+    <br/>
+    <span id="tag-cloud"><a href='/tags/aria2'>aria2</a> <a href='/tags/bangla'>bangla</a> <a href='/tags/boot'>boot</a> <a href='/tags/charset'>charset</a> <a href='/tags/chrome'>chrome</a> <a href='/tags/collation'>collation</a> <a href='/tags/downloading'>downloading</a> <a href='/tags/encoding'>encoding</a> <a href='/tags/icecast'>icecast</a> <a href='/tags/isolinux'>isolinux</a> <a href='/tags/javascript'>javascript</a> <a href='/tags/jekyll'>jekyll</a> <a href='/tags/linux'>linux</a> <a href='/tags/liquidsoap'>liquidsoap</a> <a href='/tags/liveusb'>liveusb</a> <a href='/tags/miscellaneous'>miscellaneous</a> <a href='/tags/mumble'>mumble</a> <a href='/tags/mysql'>mysql</a> <a href='/tags/nginx-'>nginx,</a> <a href='/tags/octopress'>octopress</a> <a href='/tags/opensuse'>opensuse</a> <a href='/tags/php'>php</a> <a href='/tags/plugin'>plugin</a> <a href='/tags/pulseaudio'>pulseaudio</a> <a href='/tags/sqlite3'>sqlite3</a> <a href='/tags/symfony-'>symfony,</a> <a href='/tags/twitter'>twitter</a> <a href='/tags/ubuntu'>ubuntu</a> <a href='/tags/unicode'>unicode</a> <a href='/tags/utf'>utf</a> <a href='/tags/utf8'>utf8</a> <a href='/tags/virtualbox'>virtualbox</a> <a href='/tags/zypper'>zypper</a> </span>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  <a href="/licence">Copyright &copy; 2014 - Sarim Khan<img id="cclogo" src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"></a>&nbsp;&nbsp;-
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://github.com">Github</a></span>
+  -
+  <span class="credit">Customized Theme based on <a href="https://github.com/bijumon/oct2">oct2</a> </span>
+  |
+  <span class="credit">site version v2.0-175
+</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'gittu';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx/';
+        var disqus_url = 'http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=508863169151565&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

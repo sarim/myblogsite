@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tags: nginx, | Gittu's Blog]]></title>
+  <link href="http://blog.sarim.me/tags/nginx/atom.xml" rel="self"/>
+  <link href="http://blog.sarim.me/"/>
+  <updated>2014-05-28T04:28:37+06:00</updated>
+  <id>http://blog.sarim.me/</id>
+  <author>
+    <name><![CDATA[Sarim Khan]]></name>
+    <email><![CDATA[sarim2005@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Dynamic symfony project configuration in nginx]]></title>
+    <link href="http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx/"/>
+    <updated>2014-05-28T03:58:00+06:00</updated>
+    <id>http://blog.sarim.me/2014/05/28/dynamic-symfony-project-configuration-in-nginx</id>
+    <content type="html"><![CDATA[<p>When we start a new symfony/laravel/{enter random framework here} project there are two tasks we need to do first. Create a new vhost, and add new entry in /etc/hosts. Today i&#39;m trying to implement a little nginx trick to eliminate the first task.</p>
+
+<!--more-->
+
+<p><img src="http://i.imgur.com/wSwV5W0.jpg" alt="image"></p>
+
+<p>I&#39;m not sure <code>dynamic</code> is the right word in the title, But i can&#39;t find a more suitable word. I&#39;ll create a generic nginx vhost/config that&#39;ll serve all symfony project.</p>
+
+<p>Create a new file in nginx config directory, Ex: <code>/etc/nginx/conf.d/symfony.conf</code></p>
+
+<p>Put the following config in it. Be sure to reload/restart nginx afterwards.</p>
+<div class="highlight"><pre><code class="text">server {
+
+    listen       80;
+
+    server_name ~^(?&lt;project_name&gt;[^\.]*)\.(?&lt;env&gt;prod|dev)$;
+
+    set $app &quot;app.php&quot;;
+
+    if ($env = &quot;dev&quot; ) {
+        set $app &quot;app_dev.php&quot;;
+    }
+
+    root /Users/sarim/Sites/php55/$project_name/web;
+
+    index $app index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /$app?$args;
+    }
+
+    location ~ ^/(app|app_dev|config)\.php(/|$) {
+        fastcgi_pass   unix:/usr/local/var/run/php55.sock;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+</code></pre></div>
+<p>Put your php-fpm address in <code>fastcgi_pass</code>. You&#39;ll also need to edit the <code>/Users/sarim/Sites/php55</code> part. Thats where i put my php framework projects. Now lets assume you have a project named <code>matrix</code> in that folder. Now go ahead and add following lines into <code>/etc/hosts</code></p>
+<div class="highlight"><pre><code class="text">127.0.0.1 matrix.dev matrix.prod
+</code></pre></div>
+<p>Now open <a href="http://matrix.dev/">http://matrix.dev/</a> and <a href="http://matrix.prod/">http://matrix.prod/</a> in your browser. You should see the <code>matrix</code> project in dev and prod mode. Try any other project in that folder. It&#39;ll work :)</p>
+
+<p>So whats happening here ? the magic is in the server_name line. A little bit of regex that matches anything but dot, goes into <code>project_name</code> variable. And <code>prod</code> or <code>dev</code> after the dot, goes <code>env</code> variable. After that we set <code>app</code> variable to <code>app.php</code> assuming our environment is prod. But if env == dev, it sets to <code>app_dev.php</code>. This <code>app</code> variable is used later to set which front controller we send user request to.</p>
+
+<p>PS: You can further automate the process by installing a intelligent DNS server and configure it to send <code>.*dev|prod</code> requests to <code>127.0.0.1</code>.</p>
+
+<p>Happy Coding.</p>
+]]></content>
+  </entry>
+  
+</feed>
