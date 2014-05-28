@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Tags: symfony, | Gittu's Blog]]></title>
+  <title><![CDATA[Tags: symfony | Gittu's Blog]]></title>
   <link href="http://blog.sarim.me/tags/symfony/atom.xml" rel="self"/>
   <link href="http://blog.sarim.me/"/>
-  <updated>2014-05-28T04:28:37+06:00</updated>
+  <updated>2014-05-28T16:32:06+06:00</updated>
   <id>http://blog.sarim.me/</id>
   <author>
     <name><![CDATA[Sarim Khan]]></name>
